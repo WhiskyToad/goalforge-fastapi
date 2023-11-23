@@ -1,18 +1,18 @@
 from fastapi import Depends
-from typing import Type
 from app.repositories.UserRepository import UserRepository
 from app.models.UsersModel import UserModel
+from app.schemas.UserSchema import UserSignup
 
 
 class UserService:
-    user_repository: Type[UserRepository]
+    user_repository: UserRepository
 
-    def __init__(self, user_repository: Type[UserRepository] = Depends()) -> None:
+    def __init__(self, user_repository: UserRepository = Depends()) -> None:
         self.user_repository = user_repository
 
-    def signup(self, email: str, password: str) -> UserModel:
-        user = self.user_repository.create(UserModel(email, password))
-        return user
+    def signup(self, user_details: UserSignup) -> UserModel:
+        user = UserModel(email=user_details.email, password=user_details.password)
+        return self.user_repository.create(user)
 
     # def login(self, email: str, password: str) -> UserModel:
     #     user = self.user_repository.email(email)

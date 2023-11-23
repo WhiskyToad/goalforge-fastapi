@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends
 from app.services.UserService import UserService
-from app.schemas.UserSchema import User
+from app.schemas.UserSchema import User, UserSignup
 
-router = APIRouter()
+UserRouter = APIRouter(prefix="/api/user", tags=["user"])
 
 
-@router.post("/signup", response_model=User)
-def signup(email: str, password: str, user_service: UserService = Depends()):
-    user = UserService.signup(email, password).normalize()
+@UserRouter.post("/signup", response_model=User)
+def signup(user_details: UserSignup, user_service: UserService = Depends()):
+    user = user_service.signup(user_details).normalize()
     return user
 
 
