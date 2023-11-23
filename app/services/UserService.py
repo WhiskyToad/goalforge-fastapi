@@ -16,9 +16,3 @@ class UserService:
     def signup(self, user_details: UserSignup) -> UserModel:
         user = UserModel(email=user_details.email, password=user_details.password)
         return self.user_repository.create(user)
-
-    # def login(self, email: str, password: str) -> UserModel:
-    #     user = self.user_repository.email(email)
-    #     if user and user.check_password(password):
-    #         return user
-    #     return None

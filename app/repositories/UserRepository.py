@@ -15,7 +15,7 @@ class UserRepository:
         self.db.add(user)
         self.db.commit()
         self.db.refresh(user)
-        return User(id=user.id, email=user.email)
+        return user
 
     # def get_by_email(self, email: str):
     #     # Your repository retrieval logic here

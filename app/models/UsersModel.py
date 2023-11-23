@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-from models.BaseModel import EntityMeta
+from app.models.BaseModel import EntityMeta
+from app.schemas.UserSchema import User
 
 
 class UserModel(EntityMeta):
@@ -9,3 +9,9 @@ class UserModel(EntityMeta):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
     password = Column(String)
+
+    def normalize(self) -> User:
+        return {
+            "id": self.id.__str__(),
+            "email": self.email.__str__(),
+        }
