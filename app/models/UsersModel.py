@@ -8,7 +8,8 @@ class UserModel(EntityMeta):
 
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
-    password = Column(String)
+    username = Column(String, index=True)
+    hashed_password = Column(String)
 
     def normalize(self) -> User:
         return {

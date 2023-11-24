@@ -19,4 +19,4 @@ services:
     environment:
       - POSTGRES_USER=fastapi
       - POSTGRES_PASSWORD=fastapi
-      - POSTGRES_DB=fastapi
+      - POSTGRES_DB=fastapi2
