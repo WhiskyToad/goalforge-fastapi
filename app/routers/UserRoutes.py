@@ -1,6 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import Depends, HTTPException, status, APIRouter
 from app.services.UserService import UserService
 from app.schemas.UserSchema import User, UserSignup
+from typing import Annotated
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from app.models.UsersModel import UserModel
 
 UserRouter = APIRouter(prefix="/api/user", tags=["user"])
 
