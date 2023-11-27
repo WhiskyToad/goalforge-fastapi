@@ -1,10 +1,15 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from app.repositories.UserRepository import UserRepository
 from app.models.UsersModel import UserModel
 from app.schemas.UserSchema import UserSignup
 from typing import Type
-from datetime import datetime, timedelta
 from jose import JWTError, jwt
+from typing import Annotated
+from app.schemas.JwtSchema import TokenData
+
+
+SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+ALGORITHM = "HS256"
 
 
 class UserService:
@@ -19,20 +24,21 @@ class UserService:
         user = UserModel(email=user_details.email, password=user_details.password)
         return self.user_repository.create(user)
 
-    def authenticate_user(fake_db, username: str, password: str):
-        user = get_user(fake_db, username)
-        if not user:
-            return False
-        if not verify_password(password, user.hashed_password):
-            return False
+    async def get_current_user(self, token: Annotated[str, Depends()]):
+        credentials_exception = HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            username: str = payload.get("sub")
+            if username is None:
+                raise credentials_exception
+            token_data = TokenData(username=username)
+        except JWTError:
+            raise credentials_exception
+        user = self.user_repository.get_user_by_id(username=token_data.id)
+        if user is None:
+            raise credentials_exception
         return user
-
-    def create_access_token(data: dict, expires_delta: timedelta | None = None):
-        to_encode = data.copy()
-        if expires_delta:
-            expire = datetime.utcnow() + expires_delta
-        else:
-            expire = datetime.utcnow() + timedelta(minutes=15)
-        to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-        return encoded_jwt

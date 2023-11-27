@@ -6,8 +6,8 @@ ALGORITHM = "HS256"
 
 
 class JwtService:
-    def create_access_token(self: dict, expires_delta: timedelta | None = None):
-        to_encode = self.copy()
+    def create_access_token(self, data: dict, expires_delta: timedelta | None = None):
+        to_encode = data.copy()
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
         else:

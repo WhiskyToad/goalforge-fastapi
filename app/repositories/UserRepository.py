@@ -20,3 +20,7 @@ class UserRepository:
     def get_user_by_id(self, id: int):
         # TODO: implement this
         return id
+
+    def get_user_by_email(self, email: str):
+        # TODO: implement this
+        return email
