@@ -17,6 +17,6 @@ class UserRepository:
         self.db.refresh(user)
         return user
 
-    # def get_by_email(self, email: str):
-    #     # Your repository retrieval logic here
-    #     pass
+    def get_user_by_id(self, id: int):
+        # TODO: implement this
+        return id
