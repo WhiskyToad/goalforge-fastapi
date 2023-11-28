@@ -47,25 +47,14 @@ class UserService:
         )
         return {"access_token": access_token, "token_type": "bearer"}
 
-    def get_current_user(self, token: str):
+    def get_current_user(self, user_id: int):
         credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-        try:
-            payload = jwt.decode(
-                token,
-                "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7",
-                algorithms=["HS256"],
-            )
-            user_id: str = payload.get("sub")
-            if user_id is None:
-                raise credentials_exception
-            token_data = TokenData(user_id=int(user_id))
-        except JWTError:
-            raise credentials_exception
-        user = self.user_repository.get_user_by_id(token_data.user_id)
+
+        user = self.user_repository.get_user_by_id(user_id)
         if user is None:
             raise credentials_exception
         return user

@@ -5,10 +5,7 @@ from typing import Annotated
 from fastapi.security import OAuth2PasswordRequestForm
 from app.schemas.JwtSchema import Token
 from app.services.AuthService import AuthService
-from fastapi.security import OAuth2PasswordBearer
-
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/user/login")
+from app.utils.auth import get_user_id_from_token
 
 
 UserRouter = APIRouter(prefix="/api/user", tags=["user"])
@@ -39,7 +36,7 @@ async def login_for_access_token(
 
 @UserRouter.get("/me")
 async def read_users_me(
-    token: Annotated[str, Depends(oauth2_scheme)],
+    user_id: str = Depends(get_user_id_from_token),
     user_service: UserService = Depends(UserService),
 ):
-    return user_service.get_current_user(token)
+    return user_service.get_current_user(user_id)
