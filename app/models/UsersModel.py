@@ -15,4 +15,5 @@ class UserModel(EntityMeta):
         return {
             "id": self.id.__str__(),
             "email": self.email.__str__(),
+            "username": self.username.__str__(),
         }

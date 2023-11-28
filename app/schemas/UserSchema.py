@@ -9,3 +9,4 @@ class User(BaseModel):
 class UserSignup(BaseModel):
     email: str
     password: str
+    username: str

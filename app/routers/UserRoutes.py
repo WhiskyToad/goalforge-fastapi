@@ -22,8 +22,10 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 @UserRouter.post("/signup", response_model=Token)
-def signup(user_details: UserSignup, user_service: UserService = Depends(UserService)):
-    token = user_service.signup(user_details)
+async def signup(
+    user_details: UserSignup, user_service: UserService = Depends(UserService)
+):
+    token = await user_service.signup(user_details)
     return token
 
 
