@@ -9,6 +9,7 @@ from sqlmodel import SQLModel
 from alembic import context
 
 from app.models.BaseModel import EntityMeta
+from app.models import *
 
 
 # this is the Alembic Config object, which provides

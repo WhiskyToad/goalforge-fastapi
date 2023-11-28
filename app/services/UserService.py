@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException, status
 from app.repositories.UserRepository import UserRepository
-from app.models.UsersModel import UserModel
+from app.models.UserModel import UserModel
 from app.schemas.UserSchema import UserSignup
 from typing import Type
 from jose import JWTError, jwt
