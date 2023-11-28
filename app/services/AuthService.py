@@ -37,7 +37,7 @@ class AuthService:
 
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = self.jwt_service.create_access_token(
-            {"sub": user.username}, expires_delta=access_token_expires
+            {"sub": str(user.id)}, expires_delta=access_token_expires
         )
         return {"access_token": access_token, "token_type": "bearer"}
 
