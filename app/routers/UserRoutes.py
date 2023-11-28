@@ -31,7 +31,7 @@ async def signup(
 
 @UserRouter.post("/login", response_model=Token)
 async def login_for_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends(oauth2_scheme)],
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     auth_service: AuthService = Depends(AuthService),
 ):
     return await auth_service.login(form_data)

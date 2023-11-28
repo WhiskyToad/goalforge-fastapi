@@ -13,17 +13,20 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 class AuthService:
     user_repository: Type[UserRepository]
+    security_utils: Type[SecurityUtils]
+    jwt_service: Type[JwtService]
 
     def __init__(
-        self, user_repository: Type[UserRepository] = Depends(UserRepository)
+        self,
+        user_repository: Type[UserRepository] = Depends(UserRepository),
+        security_utils: SecurityUtils = Depends(SecurityUtils),
+        jwt_service: JwtService = Depends(JwtService),
     ) -> None:
         self.user_repository = user_repository
+        self.security_utils = security_utils
+        self.jwt_service = jwt_service
 
-    async def login(
-        self,
-        form_data: OAuth2PasswordRequestForm,
-        jwt_service: JwtService = Depends(JwtService),
-    ):
+    async def login(self, form_data: OAuth2PasswordRequestForm):
         user = self.authenticate_user(form_data.username, form_data.password)
         if not user:
             raise HTTPException(
@@ -33,22 +36,21 @@ class AuthService:
             )
 
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        access_token = jwt_service.create_access_token(
+        access_token = self.jwt_service.create_access_token(
             {"sub": user.username}, expires_delta=access_token_expires
         )
         return {"access_token": access_token, "token_type": "bearer"}
 
     def authenticate_user(
         self,
-        username: str,
+        email: str,
         password: str,
-        security_utils: SecurityUtils = Depends(SecurityUtils),
     ):
         # Call repository to get user
-        user = self.user_repository.get_user(username)
+        user = self.user_repository.get_user_by_email(email)
 
         # Validate credentials
-        if not user or not security_utils.verify_password(
+        if not user or not self.security_utils.verify_password(
             password, user.hashed_password
         ):
             return False
