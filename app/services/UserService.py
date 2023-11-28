@@ -6,6 +6,8 @@ from typing import Type
 from jose import JWTError, jwt
 from typing import Annotated
 from app.schemas.JwtSchema import TokenData
+from datetime import timedelta
+from app.services.JwtService import JwtService
 
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
@@ -20,9 +22,19 @@ class UserService:
     ) -> None:
         self.user_repository = user_repository
 
-    def signup(self, user_details: UserSignup) -> UserModel:
-        user = UserModel(email=user_details.email, password=user_details.password)
-        return self.user_repository.create(user)
+    async def signup(
+        self,
+        user_details: UserSignup,
+        jwt_service: JwtService = Depends(JwtService),
+    ):
+        user = await self.user_repository.create(
+            UserModel(email=user_details.email, password=user_details.password)
+        )
+        access_token_expires = timedelta(minutes=30)
+        access_token = jwt_service.create_access_token(
+            {"sub": user.username}, expires_delta=access_token_expires
+        )
+        return {"access_token": access_token, "token_type": "bearer"}
 
     async def get_current_user(self, token: Annotated[str, Depends()]):
         credentials_exception = HTTPException(

@@ -2,7 +2,6 @@ from fastapi import Depends, HTTPException, status
 from app.repositories.UserRepository import UserRepository
 from typing import Type
 from app.utils.security import SecurityUtils
-from app.services.JwtService import JwtService
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 from app.services.JwtService import JwtService

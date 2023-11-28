@@ -21,6 +21,12 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
+@UserRouter.post("/signup", response_model=Token)
+def signup(user_details: UserSignup, user_service: UserService = Depends(UserService)):
+    token = user_service.signup(user_details)
+    return token
+
+
 @UserRouter.post("/login", response_model=Token)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends(oauth2_scheme)],
@@ -35,9 +41,3 @@ async def read_users_me(
     user_service: UserService = Depends(UserService),
 ):
     return user_service.get_current_user(token)
-
-
-@UserRouter.post("/signup", response_model=User)
-def signup(user_details: UserSignup, user_service: UserService = Depends(UserService)):
-    user = user_service.signup(user_details).normalize()
-    return user
