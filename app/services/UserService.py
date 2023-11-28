@@ -18,22 +18,24 @@ ALGORITHM = "HS256"
 class UserService:
     user_repository: Type[UserRepository]
     security_utils: Type[SecurityUtils]
+    jwt_service: Type[JwtService]
 
     def __init__(
         self,
         user_repository: Type[UserRepository] = Depends(UserRepository),
         security_utils: SecurityUtils = Depends(SecurityUtils),
+        jwt_service: JwtService = Depends(JwtService),
     ) -> None:
         self.user_repository = user_repository
         self.security_utils = security_utils
+        self.jwt_service = jwt_service
 
     async def signup(
         self,
         user_details: UserSignup,
-        jwt_service: JwtService = Depends(JwtService),
     ):
         hashed_password = self.security_utils.get_password_hash(user_details.password)
-        user = await self.user_repository.create(
+        user = self.user_repository.create(
             UserModel(
                 email=user_details.email,
                 hashed_password=hashed_password,
@@ -41,7 +43,7 @@ class UserService:
             )
         )
         access_token_expires = timedelta(minutes=30)
-        access_token = jwt_service.create_access_token(
+        access_token = self.jwt_service.create_access_token(
             {"sub": user.username}, expires_delta=access_token_expires
         )
         return {"access_token": access_token, "token_type": "bearer"}
