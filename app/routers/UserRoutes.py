@@ -1,6 +1,6 @@
 from fastapi import Depends, APIRouter
 from app.services.UserService import UserService
-from app.schemas.UserSchema import User, UserSignup
+from app.schemas.UserSchema import UserSignup
 from typing import Annotated
 from fastapi.security import OAuth2PasswordRequestForm
 from app.schemas.JwtSchema import Token
@@ -9,13 +9,6 @@ from app.utils.auth import get_user_id_from_token
 
 
 UserRouter = APIRouter(prefix="/api/user", tags=["user"])
-
-
-# to get a string like this run:
-# openssl rand -hex 32
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 @UserRouter.post("/signup", response_model=Token)

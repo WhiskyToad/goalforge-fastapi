@@ -3,15 +3,9 @@ from app.repositories.UserRepository import UserRepository
 from app.models.UserModel import UserModel
 from app.schemas.UserSchema import UserSignup
 from typing import Type
-from jose import JWTError, jwt
-from app.schemas.JwtSchema import TokenData
 from datetime import timedelta
 from app.services.JwtService import JwtService
 from app.utils.security import SecurityUtils
-
-
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
 
 
 class UserService:
