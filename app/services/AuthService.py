@@ -48,11 +48,3 @@ class AuthService:
             return False
 
         return user
-
-    def create_access_token(
-        self,
-        data: dict,
-        jwt_service: JwtService = Depends(JwtService),
-    ):
-        # Call external service to create an access token
-        return jwt_service.create_access_token(data)
