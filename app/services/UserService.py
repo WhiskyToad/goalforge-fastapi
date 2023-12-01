@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 from app.repositories.UserRepository import UserRepository
 from app.models.UserModel import UserModel
 from app.schemas.UserSchema import UserSignup
@@ -6,6 +6,7 @@ from typing import Type
 from datetime import timedelta
 from app.services.JwtService import JwtService
 from app.utils.security import SecurityUtils
+from app.errors.NotAuthorizedError import NotAuthorizedError
 
 
 class UserService:
@@ -27,6 +28,9 @@ class UserService:
         self,
         user_details: UserSignup,
     ):
+        existing_user = self.user_repository.get_user_by_email(user_details.email)
+        if existing_user:
+            raise NotAuthorizedError()
         hashed_password = self.security_utils.get_password_hash(user_details.password)
         user = self.user_repository.create(
             UserModel(
@@ -42,13 +46,7 @@ class UserService:
         return {"access_token": access_token, "token_type": "bearer"}
 
     def get_current_user(self, user_id: int):
-        credentials_exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
         user = self.user_repository.get_user_by_id(user_id)
         if user is None:
-            raise credentials_exception
+            raise NotAuthorizedError()
         return user
