@@ -11,7 +11,7 @@ from app.utils.auth import get_user_id_from_token
 UserRouter = APIRouter(prefix="/api/user", tags=["user"])
 
 
-@UserRouter.post("/signup", response_model=Token)
+@UserRouter.post("/signup", response_model=Token, status_code=201)
 async def signup(
     user_details: UserSignup, user_service: UserService = Depends(UserService)
 ):
