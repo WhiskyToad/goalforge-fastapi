@@ -1,7 +1,7 @@
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from app.errors.NotAuthorizedError import NotAuthorizedError
+from app.errors.CustomError import CustomError
 import os
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/user/login")
@@ -15,7 +15,11 @@ async def get_user_id_from_token(token: str = Depends(oauth2_scheme)):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("sub")
         if user_id is None:
-            raise NotAuthorizedError()
+            raise CustomError(
+                status_code=400, message="Invalid input", code="INVALID_INPUT"
+            )
     except JWTError:
-        raise NotAuthorizedError()
+        raise CustomError(
+            status_code=400, message="Invalid input", code="INVALID_INPUT"
+        )
     return int(user_id)

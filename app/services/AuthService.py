@@ -5,7 +5,7 @@ from app.utils.security import SecurityUtils
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 from app.services.JwtService import JwtService
-from app.errors.NotAuthorizedError import NotAuthorizedError
+from app.errors.CustomError import CustomError
 
 
 class AuthService:
@@ -26,7 +26,9 @@ class AuthService:
     async def login(self, form_data: OAuth2PasswordRequestForm):
         user = self.authenticate_user(form_data.username, form_data.password)
         if not user:
-            raise NotAuthorizedError()
+            raise CustomError(
+                status_code=400, message="Invalid input", code="INVALID_INPUT"
+            )
         access_token_expires = timedelta(minutes=30)
         access_token = self.jwt_service.create_access_token(
             {"sub": str(user.id)}, expires_delta=access_token_expires

@@ -6,7 +6,7 @@ from typing import Type
 from datetime import timedelta
 from app.services.JwtService import JwtService
 from app.utils.security import SecurityUtils
-from app.errors.NotAuthorizedError import NotAuthorizedError
+from app.errors.CustomError import CustomError
 
 
 class UserService:
@@ -30,7 +30,9 @@ class UserService:
     ):
         existing_user = self.user_repository.get_user_by_email(user_details.email)
         if existing_user:
-            raise NotAuthorizedError()
+            raise CustomError(
+                status_code=400, message="Invalid input", code="INVALID_INPUT"
+            )
         hashed_password = self.security_utils.get_password_hash(user_details.password)
         user = self.user_repository.create(
             UserModel(
@@ -48,5 +50,7 @@ class UserService:
     def get_current_user(self, user_id: int):
         user = self.user_repository.get_user_by_id(user_id)
         if user is None:
-            raise NotAuthorizedError()
+            raise CustomError(
+                status_code=400, message="Invalid input", code="INVALID_INPUT"
+            )
         return user

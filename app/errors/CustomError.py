@@ -1,11 +1,6 @@
-from typing import List
+from fastapi import HTTPException
 
 
-class CustomError(Exception):
-    def __init__(self, message: str, status_code: int = 400, errors: List[dict] = None):
-        super().__init__(message)
-        self.status_code = status_code
-        self.errors = errors or [{"message": message}]
-
-    def serialize_errors(self):
-        return self.errors
+class CustomError(HTTPException):
+    def __init__(self, status_code: int, message: str, code: str = None):
+        super().__init__(status_code, detail=[{"message": message, "code": code}])
