@@ -31,7 +31,7 @@ class UserService:
         existing_user = self.user_repository.get_user_by_email(user_details.email)
         if existing_user:
             raise CustomError(
-                status_code=400, message="Invalid input", code="INVALID_INPUT"
+                status_code=400, message="Email already exists", code="email"
             )
         hashed_password = self.security_utils.get_password_hash(user_details.password)
         user = self.user_repository.create(
@@ -41,6 +41,7 @@ class UserService:
                 username=user_details.username,
             )
         )
+        # TODO - change to use auth service login
         access_token_expires = timedelta(minutes=30)
         access_token = self.jwt_service.create_access_token(
             {"sub": str(user.id)}, expires_delta=access_token_expires
@@ -50,7 +51,5 @@ class UserService:
     def get_current_user(self, user_id: int):
         user = self.user_repository.get_user_by_id(user_id)
         if user is None:
-            raise CustomError(
-                status_code=400, message="Invalid input", code="INVALID_INPUT"
-            )
+            raise CustomError(status_code=400, message="No user found")
         return user

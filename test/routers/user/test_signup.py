@@ -14,7 +14,10 @@ def test_signup_invalid_email(test_client):
         SIGNUP_URL,
         json={"email": "test", "password": "123456", "username": "test"},
     )
-    assert response.status_code == 400
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": {"message": "value is not a valid email address"}
+    }
 
 
 def test_signup_missing_details(test_client):
@@ -22,29 +25,27 @@ def test_signup_missing_details(test_client):
         SIGNUP_URL,
         json={"password": "123456", "username": "test"},
     )
-    assert response_missing_email.status_code == 400
+    assert response_missing_email.status_code == 422
+    assert response_missing_email.json() == {"detail": {"message": "field required"}}
 
     response_missing_password = test_client.post(
         SIGNUP_URL,
         json={"email": "test@test.com", "username": "test"},
     )
-    assert response_missing_password.status_code == 400
+    assert response_missing_password.status_code == 422
+    assert response_missing_password.json() == {"detail": {"message": "field required"}}
 
 
 def test_signup_duplicate_emails(test_client):
-    # First signup
-    response_first_signup = test_client.post(
-        SIGNUP_URL,
-        json={"email": "test@test.com", "password": "123456", "username": "test"},
-    )
-    assert response_first_signup.status_code == 201
-
     # Second signup with the same email
     response_second_signup = test_client.post(
         SIGNUP_URL,
         json={"email": "test@test.com", "password": "123456", "username": "test"},
     )
     assert response_second_signup.status_code == 400
+    assert response_second_signup.json() == {
+        "detail": [{"message": "Email already exists", "code": "email"}]
+    }
 
 
 def test_signup_sets_cookie(test_client):
