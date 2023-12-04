@@ -1,8 +1,8 @@
-from fastapi import Depends, status
+from fastapi import Depends
 from app.repositories.UserRepository import UserRepository
 from typing import Type
 from app.utils.security import SecurityUtils
-from fastapi.security import OAuth2PasswordRequestForm
+from app.schemas.JwtSchema import Token
 from datetime import timedelta
 from app.services.JwtService import JwtService
 from app.errors.CustomError import CustomError
@@ -23,8 +23,8 @@ class AuthService:
         self.security_utils = security_utils
         self.jwt_service = jwt_service
 
-    async def login(self, form_data: OAuth2PasswordRequestForm):
-        user = self.authenticate_user(form_data.username, form_data.password)
+    async def login(self, username: str, password: str) -> Token:
+        user = self.authenticate_user(username, password)
         if not user:
             raise CustomError(
                 status_code=400, message="Invalid input", code="INVALID_INPUT"

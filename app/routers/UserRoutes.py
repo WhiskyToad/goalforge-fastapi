@@ -24,7 +24,7 @@ async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     auth_service: AuthService = Depends(AuthService),
 ):
-    return await auth_service.login(form_data)
+    return await auth_service.login(form_data.username, form_data.password)
 
 
 @UserRouter.get("/me")

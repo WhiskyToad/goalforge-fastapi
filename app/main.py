@@ -15,8 +15,11 @@ async def custom_exception_handler(request, exc):
     errors = exc.errors()
     return JSONResponse(
         status_code=422,
-        # TODO loop this and return an array, add field in code part
-        content={"detail": {"message": errors[0]["msg"]}},
+        content={
+            "detail": [
+                {"message": error["msg"], "code": error["type"]} for error in errors
+            ]
+        },
     )
 
 

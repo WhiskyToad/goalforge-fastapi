@@ -7,22 +7,26 @@ from datetime import timedelta
 from app.services.JwtService import JwtService
 from app.utils.security import SecurityUtils
 from app.errors.CustomError import CustomError
+from app.services.AuthService import AuthService
 
 
 class UserService:
     user_repository: Type[UserRepository]
     security_utils: Type[SecurityUtils]
     jwt_service: Type[JwtService]
+    auth_service: Type[AuthService]
 
     def __init__(
         self,
         user_repository: Type[UserRepository] = Depends(UserRepository),
         security_utils: SecurityUtils = Depends(SecurityUtils),
         jwt_service: JwtService = Depends(JwtService),
+        auth_service: AuthService = Depends(AuthService),
     ) -> None:
         self.user_repository = user_repository
         self.security_utils = security_utils
         self.jwt_service = jwt_service
+        self.auth_service = auth_service
 
     async def signup(
         self,
@@ -34,19 +38,15 @@ class UserService:
                 status_code=400, message="Email already exists", code="email"
             )
         hashed_password = self.security_utils.get_password_hash(user_details.password)
-        user = self.user_repository.create(
+        self.user_repository.create(
             UserModel(
                 email=user_details.email,
                 hashed_password=hashed_password,
                 username=user_details.username,
             )
         )
-        # TODO - change to use auth service login
-        access_token_expires = timedelta(minutes=30)
-        access_token = self.jwt_service.create_access_token(
-            {"sub": str(user.id)}, expires_delta=access_token_expires
-        )
-        return {"access_token": access_token, "token_type": "bearer"}
+        token = await self.auth_service.login(user_details.email, user_details.password)
+        return token
 
     def get_current_user(self, user_id: int):
         user = self.user_repository.get_user_by_id(user_id)
