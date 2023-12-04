@@ -56,3 +56,11 @@ We use alembic for migrations, here are the commands that will need to be ran in
 alembic revision --autogenerate -m "Initial migration"
 alembic upgrade head
 ```
+
+## Tests
+
+Tests are all under the test folder and split into different folders within. It spins up a SQLite database for each test run and you can run the tests with the command
+
+```bash
+pytest
+```
