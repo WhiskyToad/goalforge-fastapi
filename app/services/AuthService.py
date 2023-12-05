@@ -27,7 +27,8 @@ class AuthService:
         user = self.authenticate_user(username, password)
         if not user:
             raise CustomError(
-                status_code=400, message="Invalid input", code="INVALID_INPUT"
+                status_code=400,
+                message="Incorrect email or password",
             )
         access_token_expires = timedelta(minutes=30)
         access_token = self.jwt_service.create_access_token(
