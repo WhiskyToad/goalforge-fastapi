@@ -1,5 +1,9 @@
+from sqlalchemy import text
+import pytest
+from test.conftest import TestingSessionLocal
+
 LOGIN_URL = "/api/user/login"
-TEST_USER_EMAIL = "test-user@test.com"
+TEST_USER_EMAIL = "test@test.com"
 
 
 def test_login_success(test_client, seed_database_user):
@@ -72,3 +76,16 @@ def test_missing_details(test_client):
             }
         ]
     }
+
+
+@pytest.fixture(scope="module", autouse=True)
+def cleanup_database():
+    # This fixture will be executed after all tests in the module
+    # Clean up the mock database, delete all test data, etc.
+    db = TestingSessionLocal()
+    db.execute(text("DELETE FROM users"))
+    db.commit()
+    db.close()
+    yield
+    # Any cleanup code to run after all tests
+    pass

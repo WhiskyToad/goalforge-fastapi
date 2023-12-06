@@ -15,11 +15,7 @@ async def get_user_id_from_token(token: str = Depends(oauth2_scheme)):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("sub")
         if user_id is None:
-            raise CustomError(
-                status_code=400, message="Invalid input", code="INVALID_INPUT"
-            )
+            raise CustomError(status_code=401, message="No user found")
     except JWTError:
-        raise CustomError(
-            status_code=400, message="Invalid input", code="INVALID_INPUT"
-        )
+        raise CustomError(status_code=400, message="JWT Error")
     return int(user_id)

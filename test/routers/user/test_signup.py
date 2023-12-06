@@ -1,3 +1,7 @@
+from sqlalchemy import text
+import pytest
+from test.conftest import TestingSessionLocal
+
 SIGNUP_URL = "/api/user/signup"
 
 
@@ -66,3 +70,17 @@ def test_signup_sets_cookie(test_client):
     assert response.status_code == 201
     assert response.json().get("access_token")
     assert response.json().get("token_type") == "bearer"
+
+
+# Create a fixture for cleaning up the mock database after tests
+@pytest.fixture(scope="module", autouse=True)
+def cleanup_database():
+    # This fixture will be executed after all tests in the module
+    # Clean up the mock database, delete all test data, etc.
+    db = TestingSessionLocal()
+    db.execute(text("DELETE FROM users"))
+    db.commit()
+    db.close()
+    yield
+    # Any cleanup code to run after all tests
+    pass

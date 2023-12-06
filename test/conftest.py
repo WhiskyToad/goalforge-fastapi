@@ -7,8 +7,7 @@ from app.config.Database import get_db_connection
 from app.main import app
 from app.models.UserModel import UserModel
 from app.utils.security import SecurityUtils
-from fastapi import Depends
-from sqlalchemy.orm import Session
+from app.services.JwtService import JwtService
 import pytest
 
 SQLALCHEMY_DATABASE_URL = "sqlite://"
@@ -47,10 +46,14 @@ def seed_database_user():
     # Create a test user in the database
     hashed_password = SecurityUtils().get_password_hash("password")
     user = UserModel(
-        email="test-user@test.com",
+        email="test@test.com",
         hashed_password=hashed_password,
         username="test_user",
     )
     db.add(user)
     db.commit()
     db.refresh(user)
+    # Generate a token for the test user
+    access_token = JwtService().create_access_token(data={"sub": str(user.id)})
+
+    return access_token
