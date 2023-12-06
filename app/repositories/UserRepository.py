@@ -2,7 +2,6 @@ from fastapi import Depends
 from app.models.UserModel import UserModel
 from sqlalchemy.orm import Session
 from app.config.Database import get_db_connection
-from app.schemas.UserSchema import User
 
 
 class UserRepository:

@@ -5,6 +5,10 @@ from sqlalchemy.pool import StaticPool
 from app.models.BaseModel import EntityMeta
 from app.config.Database import get_db_connection
 from app.main import app
+from app.models.UserModel import UserModel
+from app.utils.security import SecurityUtils
+from fastapi import Depends
+from sqlalchemy.orm import Session
 import pytest
 
 SQLALCHEMY_DATABASE_URL = "sqlite://"
@@ -35,3 +39,18 @@ app.dependency_overrides[get_db_connection] = override_get_db
 def test_client():
     with TestClient(app) as client:
         yield client
+
+
+@pytest.fixture
+def seed_database_user():
+    db = TestingSessionLocal()
+    # Create a test user in the database
+    hashed_password = SecurityUtils().get_password_hash("password")
+    user = UserModel(
+        email="test-user@test.com",
+        hashed_password=hashed_password,
+        username="test_user",
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
