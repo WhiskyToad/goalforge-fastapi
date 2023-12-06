@@ -1,14 +1,14 @@
-from sqlalchemy import text
 import pytest
-from test.conftest import TestingSessionLocal
+from test.utils.cleanup import cleanup_users_db
 
 SIGNUP_URL = "/api/user/signup"
+TEST_USER_EMAIL = "test@test.com"
 
 
 def test_signup_success(test_client):
     response = test_client.post(
         SIGNUP_URL,
-        json={"email": "test@test.com", "password": "123456", "username": "test"},
+        json={"email": TEST_USER_EMAIL, "password": "123456", "username": "test"},
     )
     assert response.status_code == 201
 
@@ -42,7 +42,7 @@ def test_signup_missing_details(test_client):
 
     response_missing_password = test_client.post(
         SIGNUP_URL,
-        json={"email": "test@test.com", "username": "test"},
+        json={"email": TEST_USER_EMAIL, "username": "test"},
     )
     assert response_missing_password.status_code == 422
     assert response_missing_password.json() == {
@@ -54,7 +54,7 @@ def test_signup_duplicate_emails(test_client):
     # Second signup with the same email
     response_second_signup = test_client.post(
         SIGNUP_URL,
-        json={"email": "test@test.com", "password": "123456", "username": "test"},
+        json={"email": TEST_USER_EMAIL, "password": "123456", "username": "test"},
     )
     assert response_second_signup.status_code == 400
     assert response_second_signup.json() == {
@@ -72,15 +72,7 @@ def test_signup_sets_cookie(test_client):
     assert response.json().get("token_type") == "bearer"
 
 
-# Create a fixture for cleaning up the mock database after tests
 @pytest.fixture(scope="module", autouse=True)
-def cleanup_database():
-    # This fixture will be executed after all tests in the module
-    # Clean up the mock database, delete all test data, etc.
-    db = TestingSessionLocal()
-    db.execute(text("DELETE FROM users"))
-    db.commit()
-    db.close()
+def cleanup():
+    cleanup_users_db()
     yield
-    # Any cleanup code to run after all tests
-    pass

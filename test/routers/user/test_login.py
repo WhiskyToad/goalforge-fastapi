@@ -1,12 +1,18 @@
-from sqlalchemy import text
 import pytest
-from test.conftest import TestingSessionLocal
+from test.utils.cleanup import cleanup_users_db
+from test.utils.db_seeding import seed_database_user
 
 LOGIN_URL = "/api/user/login"
 TEST_USER_EMAIL = "test@test.com"
+VALUE_ERROR_MISSING = "value_error.missing"
 
 
-def test_login_success(test_client, seed_database_user):
+@pytest.fixture
+def seed_database():
+    seed_database_user()
+
+
+def test_login_success(test_client, seed_database):
     response = test_client.post(
         LOGIN_URL,
         data={
@@ -56,9 +62,8 @@ def test_missing_details(test_client):
     assert response_missing_email.json() == {
         "detail": [
             {
-                "code": "value_error.missing",
+                "code": VALUE_ERROR_MISSING,
                 "message": "field required",
-                "code": "value_error.missing",
             }
         ]
     }
@@ -70,22 +75,14 @@ def test_missing_details(test_client):
     assert response_missing_password.json() == {
         "detail": [
             {
-                "code": "value_error.missing",
+                "code": VALUE_ERROR_MISSING,
                 "message": "field required",
-                "code": "value_error.missing",
             }
         ]
     }
 
 
 @pytest.fixture(scope="module", autouse=True)
-def cleanup_database():
-    # This fixture will be executed after all tests in the module
-    # Clean up the mock database, delete all test data, etc.
-    db = TestingSessionLocal()
-    db.execute(text("DELETE FROM users"))
-    db.commit()
-    db.close()
+def cleanup():
+    cleanup_users_db()
     yield
-    # Any cleanup code to run after all tests
-    pass

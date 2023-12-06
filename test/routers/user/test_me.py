@@ -1,13 +1,19 @@
-from sqlalchemy import text
 import pytest
-from test.conftest import TestingSessionLocal
+from test.utils.cleanup import cleanup_users_db
+from test.utils.db_seeding import seed_database_user
+
 
 ME_ROUTE = "/api/user/me"
 
 
-def test_read_users_me_with_valid_token(test_client, seed_database_user):
+@pytest.fixture
+def seed_database():
+    return seed_database_user()
+
+
+def test_read_users_me_with_valid_token(test_client, seed_database):
     # Provide a valid token for testing
-    valid_token = seed_database_user
+    valid_token = seed_database
 
     response = test_client.get(
         ME_ROUTE,
@@ -32,15 +38,7 @@ def test_read_users_me_with_invalid_token(test_client):
     assert response.json() == {"detail": [{"message": "JWT Error", "code": None}]}
 
 
-# Create a fixture for cleaning up the mock database after tests
 @pytest.fixture(scope="module", autouse=True)
-def cleanup_database():
-    # This fixture will be executed after all tests in the module
-    # Clean up the mock database, delete all test data, etc.
-    db = TestingSessionLocal()
-    db.execute(text("DELETE FROM users"))
-    db.commit()
-    db.close()
+def cleanup():
+    cleanup_users_db()
     yield
-    # Any cleanup code to run after all tests
-    pass
