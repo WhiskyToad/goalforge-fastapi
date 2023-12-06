@@ -1,6 +1,6 @@
 from fastapi import Depends, APIRouter
 from app.services.UserService import UserService
-from app.schemas.UserSchema import UserSignup
+from app.schemas.UserSchema import UserSignup, User
 from typing import Annotated
 from fastapi.security import OAuth2PasswordRequestForm
 from app.schemas.JwtSchema import Token
@@ -27,9 +27,9 @@ async def login_for_access_token(
     return await auth_service.login(form_data.username, form_data.password)
 
 
-@UserRouter.get("/me")
+@UserRouter.get("/me", response_model=User)
 async def read_users_me(
     user_id: str = Depends(get_user_id_from_token),
     user_service: UserService = Depends(UserService),
 ):
-    return user_service.get_current_user(user_id)
+    return user_service.get_current_user(user_id).normalize()
