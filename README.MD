@@ -10,6 +10,8 @@ This is a template for a FastAPI application integrated with PostgreSQL, package
 - PostgreSQL for database storage
 - Docker for containerization
 - SQLAlchemy as the ORM (Object-Relational Mapping)
+- Complete authorization operations
+- Test setup
 
 ## Prerequisites
 
@@ -21,8 +23,8 @@ This is a template for a FastAPI application integrated with PostgreSQL, package
 1. **Clone the Repository:**
 
    ```bash
-   git clone https://github.com/yourusername/your-fastapi-app.git
-   cd your-fastapi-app
+   git clone https://github.com/WhiskyToad/fastapi-starter
+   cd fastapi-starter
    ```
 
 2. **Configure Environment Variables:**
