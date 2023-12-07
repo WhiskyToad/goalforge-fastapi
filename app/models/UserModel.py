@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from app.models.BaseModel import EntityMeta
 from app.schemas.UserSchema import User
+from sqlalchemy.orm import relationship
 
 
 class UserModel(EntityMeta):
@@ -10,6 +11,8 @@ class UserModel(EntityMeta):
     email = Column(String, unique=True, index=True)
     username = Column(String, index=True)
     hashed_password = Column(String)
+
+    tasks = relationship("Task", back_populates="owner")
 
     def normalize(self) -> User:
         return {
