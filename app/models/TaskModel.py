@@ -27,7 +27,7 @@ class TaskInstanceInDb(EntityMeta):
     completed = Column(Boolean, default=False)
     completed_at = Column(DateTime, default=None)
     task_id = Column(Integer, ForeignKey("tasks.id"))
-    due_date = Column(Date)
+    due_date = Column(Date, default=None)
     status = Column(String, default="pending")
 
     def normalize(self):
