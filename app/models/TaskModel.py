@@ -10,7 +10,6 @@ class TaskInDb(EntityMeta):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     description = Column(String)
-    due_date = Column(DateTime)
     recurring = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
