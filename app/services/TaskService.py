@@ -1,7 +1,7 @@
 from fastapi import Depends
 from typing import Type
 from app.repositories.TaskRepository import TaskRepository
-from app.schemas.TaskSchema import CreateTaskInput
+from app.schemas.TaskSchema import CreateTaskInput, TaskInstance
 
 
 class TaskService:
@@ -17,5 +17,6 @@ class TaskService:
         self,
         task_input: CreateTaskInput,
         user_id: str,
-    ):
-        return self.task_repository.create_task(task_input, user_id)
+    ) -> TaskInstance:
+        task_data = self.task_repository.create_task(task_input, user_id)
+        return {**task_data.task.normalize().dict(), **task_data.task_instance.dict()}

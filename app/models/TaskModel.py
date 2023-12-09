@@ -17,7 +17,10 @@ class TaskInDb(EntityMeta):
     owner = relationship("User", back_populates="tasks")
 
     def normalize(self):
-        return {}
+        return {
+            "title": self.title.__str__(),
+            "description": self.description.__str__(),
+        }
 
 
 class TaskInstanceInDb(EntityMeta):
@@ -25,10 +28,7 @@ class TaskInstanceInDb(EntityMeta):
 
     id = Column(Integer, primary_key=True, index=True)
     completed = Column(Boolean, default=False)
-    completed_at = Column(DateTime, default=None)
+    completed_at = Column(DateTime, nullable=True, default=None)
     task_id = Column(Integer, ForeignKey("tasks.id"))
-    due_date = Column(Date, default=None)
+    due_date = Column(Date, nullable=True, default=None)
     status = Column(String, default="pending")
-
-    def normalize(self):
-        return {}
