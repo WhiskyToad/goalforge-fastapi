@@ -45,3 +45,6 @@ class TaskRepository:
         self.db.commit()
         self.db.refresh(task_instance)
         return task_instance
+
+    def get_task_by_id(self, task_id: int) -> TaskInDb:
+        return self.db.query(TaskInDb).filter(TaskInDb.id == task_id).first()
