@@ -1,7 +1,11 @@
 from fastapi import Depends
 from typing import Type
 from app.repositories.TaskRepository import TaskRepository
-from app.schemas.TaskSchema import CreateTaskInput, TaskInstance
+from app.schemas.TaskSchema import (
+    CreateTaskInput,
+    TaskInstance,
+    CreateTaskInstanceInput,
+)
 
 
 class TaskService:
@@ -19,4 +23,15 @@ class TaskService:
         user_id: str,
     ) -> TaskInstance:
         task_data = await self.task_repository.create_task(task_input, user_id)
+        return task_data
+
+    async def create_task_instance(
+        self,
+        task_input: CreateTaskInstanceInput,
+        user_id: str,
+    ) -> TaskInstance:
+        # TODO - implement checking task responds to the user
+        task_data = await self.task_repository.create_task_instance(
+            task_input.task_id, task_input.due_date
+        )
         return task_data

@@ -11,6 +11,11 @@ class CreateTaskInput(BaseModel):
     due_date: Optional[datetime] = None
 
 
+class CreateTaskInstanceInput(BaseModel):
+    task_id: int
+    due_date: Optional[datetime] = None
+
+
 class TaskInstance(BaseModel):
     task_id: int
     title: str
