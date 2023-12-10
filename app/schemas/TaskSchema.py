@@ -13,7 +13,7 @@ class CreateTaskInput(BaseModel):
 
 class CreateTaskInstanceInput(BaseModel):
     task_id: int
-    due_date: Optional[datetime] = None
+    due_date: datetime
 
 
 class TaskInstance(BaseModel):

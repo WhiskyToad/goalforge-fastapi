@@ -23,8 +23,20 @@ class TaskService:
         task_input: CreateTaskInput,
         user_id: str,
     ) -> TaskInstance:
-        task_data = await self.task_repository.create_task(task_input, user_id)
-        return task_data
+        task = await self.task_repository.create_task(task_input, user_id)
+        task_instance = await self.task_repository.create_task_instance(
+            task.task_id, task_input.due_date
+        )
+        return TaskInstance(
+            task_id=task.id,
+            title=task.title,
+            description=task.description,
+            id=task_instance.id,
+            completed=task_instance.completed,
+            completed_at=task_instance.completed_at,
+            due_date=task_instance.due_date,
+            status=task_instance.status,
+        )
 
     async def create_task_instance(
         self,
