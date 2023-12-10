@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional
 
 from pydantic import BaseModel
@@ -18,5 +18,5 @@ class TaskInstance(BaseModel):
     id: int
     completed: bool
     completed_at: Optional[datetime]
-    due_date: Optional[datetime]
+    due_date: Optional[date]
     status: str

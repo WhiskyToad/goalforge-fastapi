@@ -18,5 +18,5 @@ class TaskService:
         task_input: CreateTaskInput,
         user_id: str,
     ) -> TaskInstance:
-        task_data = self.task_repository.create_task(task_input, user_id)
-        return {**task_data.task.normalize().dict(), **task_data.task_instance.dict()}
+        task_data = await self.task_repository.create_task(task_input, user_id)
+        return task_data

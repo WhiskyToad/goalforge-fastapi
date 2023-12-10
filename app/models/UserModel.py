@@ -12,7 +12,7 @@ class UserModel(EntityMeta):
     username = Column(String, index=True)
     hashed_password = Column(String)
 
-    tasks = relationship("Task", back_populates="owner")
+    tasks = relationship("TaskInDb", back_populates="owner")
 
     def normalize(self) -> User:
         return {

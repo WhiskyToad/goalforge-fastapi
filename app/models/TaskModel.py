@@ -14,7 +14,7 @@ class TaskInDb(EntityMeta):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     owner_id = Column(Integer, ForeignKey("users.id"))
-    owner = relationship("User", back_populates="tasks")
+    owner = relationship("UserModel", back_populates="tasks")
 
     def normalize(self):
         return {

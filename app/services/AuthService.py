@@ -30,7 +30,7 @@ class AuthService:
                 status_code=400,
                 message="Incorrect email or password",
             )
-        access_token_expires = timedelta(minutes=30)
+        access_token_expires = timedelta(minutes=9999999)
         access_token = self.jwt_service.create_access_token(
             {"sub": str(user.id)}, expires_delta=access_token_expires
         )
