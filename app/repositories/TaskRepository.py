@@ -1,10 +1,12 @@
 from fastapi import Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.config.Database import get_db_connection
 from app.schemas.TaskSchema import CreateTaskInput
 from app.models.TaskModel import TaskInDb, TaskInstanceInDb
 from app.schemas.TaskSchema import TaskInstance
 from typing import Optional
+from sqlalchemy import func
+from datetime import date
 
 
 class TaskRepository:
@@ -25,17 +27,7 @@ class TaskRepository:
         self.db.add(task)
         self.db.commit()
         self.db.refresh(task)
-        task_instance = await self.create_task_instance(task.id, task_input.due_date)
-        return TaskInstance(
-            task_id=task.id,
-            title=task.title,
-            description=task.description,
-            id=task_instance.id,
-            completed=task_instance.completed,
-            completed_at=task_instance.completed_at,
-            due_date=task_instance.due_date,
-            status=task_instance.status,
-        )
+        return task
 
     async def create_task_instance(
         self, task_id: int, due_date: Optional[str]
@@ -46,5 +38,21 @@ class TaskRepository:
         self.db.refresh(task_instance)
         return task_instance
 
-    def get_task_by_id(self, task_id: int) -> TaskInDb:
-        return self.db.query(TaskInDb).filter(TaskInDb.id == task_id).first()
+    def get_task_by_id_and_owner(self, task_id: int, owner_id: str):
+        return (
+            self.db.query(TaskInDb)
+            .filter(TaskInDb.id == task_id, TaskInDb.owner_id == owner_id)
+            .first()
+        )
+
+    async def get_tasks_by_due_date(self, due_date: date, user_id: str):
+        tasks = (
+            self.db.query(TaskInDb, TaskInstanceInDb)
+            .join(TaskInstanceInDb, TaskInDb.id == TaskInstanceInDb.task_id)
+            .filter(
+                TaskInDb.owner_id == user_id,
+                func.date(TaskInstanceInDb.due_date) == due_date,
+            )
+            .all()
+        )
+        return tasks

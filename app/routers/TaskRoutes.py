@@ -6,6 +6,8 @@ from app.schemas.TaskSchema import (
     CreateTaskInstanceInput,
 )
 from app.services.TaskService import TaskService
+from datetime import date
+from typing import List
 
 
 TaskRouter = APIRouter(prefix="/api/task", tags=["task"])
@@ -27,3 +29,12 @@ async def create_task_instance(
     task_service: TaskService = Depends(TaskService),
 ):
     return await task_service.create_task_instance(task_input, user_id)
+
+
+@TaskRouter.get("/tasks/{due_date}", response_model=List[TaskInstance])
+async def get_tasks_by_due_date(
+    due_date: date,
+    task_service: TaskService = Depends(TaskService),
+    user_id: str = Depends(get_user_id_from_token),
+):
+    return await task_service.get_tasks_by_due_date(due_date, user_id)
