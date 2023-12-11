@@ -8,7 +8,7 @@ class CreateTaskInput(BaseModel):
     title: str
     description: str
     recurring: bool
-    due_date: Optional[datetime] = None
+    due_date: datetime
 
 
 class CreateTaskInstanceInput(BaseModel):
@@ -23,5 +23,5 @@ class TaskInstance(BaseModel):
     id: int
     completed: bool
     completed_at: Optional[datetime]
-    due_date: Optional[date]
+    due_date: Optional[datetime]
     status: str

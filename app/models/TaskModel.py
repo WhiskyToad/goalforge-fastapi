@@ -30,5 +30,5 @@ class TaskInstanceInDb(EntityMeta):
     completed = Column(Boolean, default=False)
     completed_at = Column(DateTime, nullable=True, default=None)
     task_id = Column(Integer, ForeignKey("tasks.id"))
-    due_date = Column(Date, nullable=True, default=None)
+    due_date = Column(DateTime)
     status = Column(String, default="pending")
