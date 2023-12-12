@@ -3,10 +3,10 @@ from typing import Type
 from app.repositories.TaskRepository import TaskRepository
 from app.schemas.TaskSchema import (
     CreateTaskInput,
-    TaskInstance,
+    TaskInstanceSchema,
     CreateTaskInstanceInput,
 )
-from app.models.TaskModel import TaskInDb, TaskInstanceInDb
+from app.models.TaskModel import Task, TaskInstance
 from app.errors.CustomError import CustomError
 from datetime import date
 
@@ -24,7 +24,7 @@ class TaskService:
         self,
         task_input: CreateTaskInput,
         user_id: str,
-    ) -> TaskInstance:
+    ) -> TaskInstanceSchema:
         task = await self.task_repository.create_task(task_input, user_id)
         task_instance = await self.task_repository.create_task_instance(
             task.id, task_input.due_date
@@ -35,7 +35,7 @@ class TaskService:
         self,
         task_input: CreateTaskInstanceInput,
         user_id: str,
-    ) -> TaskInstance:
+    ) -> TaskInstanceSchema:
         task = self.task_repository.get_task_by_id(task_input.task_id, user_id)
         if task is None:
             raise CustomError(
@@ -57,9 +57,9 @@ class TaskService:
         ]
 
     def map_task_task_instances(
-        self, task: TaskInDb, task_instance: TaskInstanceInDb
+        self, task: Task, task_instance: TaskInstance
     ) -> TaskInstance:
-        return TaskInstance(
+        return TaskInstanceSchema(
             task_id=task.id,
             title=task.title,
             description=task.description,

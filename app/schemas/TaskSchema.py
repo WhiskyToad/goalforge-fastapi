@@ -16,7 +16,7 @@ class CreateTaskInstanceInput(BaseModel):
     due_date: datetime
 
 
-class TaskInstance(BaseModel):
+class TaskInstanceSchema(BaseModel):
     task_id: int
     title: str
     description: str

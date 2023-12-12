@@ -2,7 +2,7 @@ from fastapi import Depends, APIRouter
 from app.utils.auth import get_user_id_from_token
 from app.schemas.TaskSchema import (
     CreateTaskInput,
-    TaskInstance,
+    TaskInstanceSchema,
     CreateTaskInstanceInput,
 )
 from app.services.TaskService import TaskService
@@ -13,7 +13,7 @@ from typing import List
 TaskRouter = APIRouter(prefix="/api/task", tags=["task"])
 
 
-@TaskRouter.post("/create/task", status_code=201, response_model=TaskInstance)
+@TaskRouter.post("/create/task", status_code=201, response_model=TaskInstanceSchema)
 async def create_task(
     task_input: CreateTaskInput,
     user_id: str = Depends(get_user_id_from_token),
@@ -22,7 +22,9 @@ async def create_task(
     return await task_service.create_task(task_input, user_id)
 
 
-@TaskRouter.post("/create/task_instance", status_code=201, response_model=TaskInstance)
+@TaskRouter.post(
+    "/create/task_instance", status_code=201, response_model=TaskInstanceSchema
+)
 async def create_task_instance(
     task_input: CreateTaskInstanceInput,
     user_id: str = Depends(get_user_id_from_token),
@@ -31,7 +33,7 @@ async def create_task_instance(
     return await task_service.create_task_instance(task_input, user_id)
 
 
-@TaskRouter.get("/tasks/{due_date}", response_model=List[TaskInstance])
+@TaskRouter.get("/tasks/{due_date}", response_model=List[TaskInstanceSchema])
 async def get_tasks_by_due_date(
     due_date: date,
     task_service: TaskService = Depends(TaskService),

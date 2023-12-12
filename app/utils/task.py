@@ -1,9 +1,9 @@
 from app.schemas.TaskSchema import TaskInstance
-from app.models.TaskModel import TaskInDb, TaskInstanceInDb
+from app.models.TaskModel import Task, TaskInstance
 
 
 def convert_to_task_instance_response(
-    task: TaskInDb, task_instance: TaskInstanceInDb
+    task: Task, task_instance: TaskInstance
 ) -> TaskInstance:
     return TaskInstance(
         task_id=task_instance.task_id,

@@ -1,10 +1,10 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Date
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.models.BaseModel import EntityMeta
 
 
-class TaskInDb(EntityMeta):
+class Task(EntityMeta):
     __tablename__ = "tasks"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -15,15 +15,11 @@ class TaskInDb(EntityMeta):
 
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("UserModel", back_populates="tasks")
-
-    def normalize(self):
-        return {
-            "title": self.title.__str__(),
-            "description": self.description.__str__(),
-        }
+    completed_instances = relationship("CompletedTask", back_populates="task")
+    failed_instances = relationship("FailedTask", back_populates="task")
 
 
-class TaskInstanceInDb(EntityMeta):
+class TaskInstance(EntityMeta):
     __tablename__ = "task_instances"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -32,3 +28,25 @@ class TaskInstanceInDb(EntityMeta):
     task_id = Column(Integer, ForeignKey("tasks.id"))
     due_date = Column(DateTime)
     status = Column(String, default="pending")
+
+
+class CompletedTask(EntityMeta):
+    __tablename__ = "completed_tasks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, index=True)
+    description = Column(String)
+    completed_at = Column(DateTime, default=datetime.utcnow)
+    task_id = Column(Integer, ForeignKey("tasks.id"))
+    task = relationship("Task", back_populates="completed_instances")
+
+
+class FailedTask(EntityMeta):
+    __tablename__ = "failed_tasks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, index=True)
+    description = Column(String)
+    failed_at = Column(DateTime, default=datetime.utcnow)
+    task_id = Column(Integer, ForeignKey("tasks.id"))
+    task = relationship("Task", back_populates="failed_instances")
