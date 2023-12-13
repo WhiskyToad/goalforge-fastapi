@@ -15,6 +15,8 @@ class Task(EntityMeta):
 
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("UserModel", back_populates="tasks")
+
+    task_instances = relationship("TaskInstance", back_populates="task")
     completed_instances = relationship("CompletedTask", back_populates="task")
     failed_instances = relationship("FailedTask", back_populates="task")
 
@@ -28,6 +30,8 @@ class TaskInstance(EntityMeta):
     task_id = Column(Integer, ForeignKey("tasks.id"))
     due_date = Column(DateTime)
     status = Column(String, default="pending")
+
+    task = relationship("Task", back_populates="task_instances")
 
 
 class CompletedTask(EntityMeta):

@@ -1,8 +1,8 @@
 from fastapi import Depends
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 from app.config.Database import get_db_connection
 from app.schemas.TaskSchema import CreateTaskInput
-from app.models.TaskModel import Task, TaskInstance
+from app.models.TaskModel import Task, TaskInstance, CompletedTask
 from typing import Optional
 from sqlalchemy import func
 from datetime import date
@@ -55,3 +55,32 @@ class TaskRepository:
             .all()
         )
         return tasks
+
+    async def complete_task_instance(self, task_instance_id: int, user_id: str):
+        task_instance = (
+            self.db.query(TaskInstance)
+            .join(Task, Task.id == TaskInstance.task_id)
+            .filter(
+                TaskInstance.id == task_instance_id,
+                Task.owner_id == user_id,
+            )
+            .first()
+        )
+        if task_instance is None:
+            return None
+
+        task_instance.completed = True
+        task_instance.completed_at = func.now()
+        task_instance.status = "completed"
+
+        completed_task = CompletedTask(
+            task=task_instance.task,
+            description=task_instance.task.description,
+            task_id=task_instance.task_id,
+            title=task_instance.task.title,
+        )
+        self.db.add(completed_task)
+
+        self.db.commit()
+        self.db.refresh(task_instance)
+        return task_instance
