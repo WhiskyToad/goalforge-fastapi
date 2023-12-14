@@ -5,6 +5,7 @@ from app.schemas.TaskSchema import (
     CreateTaskInput,
     TaskInstanceSchema,
     CreateTaskInstanceInput,
+    EditTaskInput,
 )
 from app.models.TaskModel import Task, TaskInstance
 from app.errors.CustomError import CustomError
@@ -76,6 +77,16 @@ class TaskService:
             due_date=task_instance.due_date,
             status=task_instance.status,
         )
+
+    async def edit_task(self, task_input: EditTaskInput, user_id: str):
+        task = await self.task_repository.edit_task(task_input, user_id)
+        if task is None:
+            raise CustomError(
+                status_code=status.HTTP_404_NOT_FOUND,
+                message="Task not found",
+            )
+        # TODO - return schema type
+        return task
 
     def map_task_task_instances(
         self, task: Task, task_instance: TaskInstance

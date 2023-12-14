@@ -4,6 +4,8 @@ from app.schemas.TaskSchema import (
     CreateTaskInput,
     TaskInstanceSchema,
     CreateTaskInstanceInput,
+    EditTaskInput,
+    TaskSchema,
 )
 from app.services.TaskService import TaskService
 from datetime import date
@@ -63,3 +65,16 @@ async def complete_task_instance(
     user_id: str = Depends(get_user_id_from_token),
 ):
     return await task_service.complete_task_instance(task_instance_id, user_id)
+
+
+@TaskRouter.patch(
+    "/edit/{task__id}",
+    status_code=status.HTTP_200_OK,
+    response_model=TaskSchema,
+)
+async def complete_task_instance(
+    task_input: EditTaskInput,
+    task_service: TaskService = Depends(TaskService),
+    user_id: str = Depends(get_user_id_from_token),
+):
+    return await task_service.edit_task(task_input, user_id)

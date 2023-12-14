@@ -1,7 +1,7 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from app.config.Database import get_db_connection
-from app.schemas.TaskSchema import CreateTaskInput
+from app.schemas.TaskSchema import CreateTaskInput, EditTaskInput
 from app.models.TaskModel import Task, TaskInstance, CompletedTask
 from typing import Optional
 from sqlalchemy import func
@@ -84,3 +84,18 @@ class TaskRepository:
         self.db.commit()
         self.db.refresh(task_instance)
         return task_instance
+
+    async def edit_task(self, task_input: EditTaskInput, user_id: str):
+        task = (
+            self.db.query(Task)
+            .filter(Task.id == task_input.task_id, Task.owner_id == user_id)
+            .first()
+        )
+        if task is None:
+            return None
+        task.title = task_input.title
+        task.description = task_input.description
+        task.recurring = task_input.recurring
+        self.db.commit()
+        self.db.refresh(task)
+        return task
