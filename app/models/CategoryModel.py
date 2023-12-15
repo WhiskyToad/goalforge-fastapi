@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.models.BaseModel import EntityMeta
 
@@ -11,3 +12,5 @@ class TaskCategory(EntityMeta):
     description = Column(String)
     created_at = Column(DateTime, default=datetime.utcnow)
     owner_id = Column(Integer, ForeignKey("users.id"))
+
+    tasks = relationship("Task", back_populates="tasks")
