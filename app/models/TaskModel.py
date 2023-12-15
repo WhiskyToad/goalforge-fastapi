@@ -34,11 +34,3 @@ class TaskInstance(EntityMeta):
     status = Column(String, default="pending")
 
     task = relationship("Task", back_populates="task_instances")
-
-
-class TaskCategory(EntityMeta):
-    __tablename__ = "task_categories"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True, unique=True)
-    description = Column(String)
