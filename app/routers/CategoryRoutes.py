@@ -11,7 +11,7 @@ CategoryRouter = APIRouter(prefix="/api/category", tags=["category"])
 
 
 @CategoryRouter.post(
-    "/create/task",
+    "/create",
     status_code=status.HTTP_201_CREATED,
     response_model=CategorySchema,
 )

@@ -1,8 +1,8 @@
-from fastapi import Depends, status
+from fastapi import Depends
 from typing import Type
 from app.repositories.CategoryRepository import CategoryRepository
-from app.errors.CustomError import CustomError
 from datetime import date
+from app.schemas.CategorySchema import CategorySchema, CreateCategoryInput
 
 
 class CategoryService:
@@ -14,7 +14,12 @@ class CategoryService:
     ) -> None:
         self.category_repository = category_repository
 
-    async def create_category(self, category_input, user_id):
-        return await self.category_repository.create_category(
+    async def create_category(
+        self, category_input: CreateCategoryInput, user_id: str
+    ) -> CategorySchema:
+        category = await self.category_repository.create_category(
             category_input, user_id, date.today()
+        )
+        return CategorySchema(
+            id=category.id, title=category.title, description=category.description
         )
