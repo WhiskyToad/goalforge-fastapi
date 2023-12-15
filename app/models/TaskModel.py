@@ -11,6 +11,7 @@ class Task(EntityMeta):
     title = Column(String, index=True)
     description = Column(String)
     recurring = Column(Boolean, default=False)
+    recurring_interval = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     owner_id = Column(Integer, ForeignKey("users.id"))

@@ -6,6 +6,7 @@ from app.schemas.TaskSchema import (
     TaskInstanceSchema,
     CreateTaskInstanceInput,
     EditTaskInput,
+    TaskSchema,
 )
 from app.models.TaskModel import Task, TaskInstance
 from app.errors.CustomError import CustomError
@@ -85,8 +86,15 @@ class TaskService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 message="Task not found",
             )
-        # TODO - return schema type
-        return task
+        return TaskSchema(
+            id=task.id,
+            title=task.title,
+            description=task.description,
+            recurring=task.recurring,
+            recurring_interval=task.recurring_interval,
+            created_at=task.created_at,
+            owner_id=task.owner_id,
+        )
 
     def map_task_task_instances(
         self, task: Task, task_instance: TaskInstance
