@@ -68,6 +68,19 @@ async def complete_task_instance(
 
 
 @TaskRouter.patch(
+    "/uncomplete/{task_instance_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=TaskInstanceSchema,
+)
+async def uncomplete_task_instance(
+    task_instance_id: int,
+    task_service: TaskService = Depends(TaskService),
+    user_id: str = Depends(get_user_id_from_token),
+):
+    return await task_service.uncomplete_task_instance(task_instance_id, user_id)
+
+
+@TaskRouter.patch(
     "/edit/{task__id}",
     status_code=status.HTTP_200_OK,
     response_model=TaskSchema,

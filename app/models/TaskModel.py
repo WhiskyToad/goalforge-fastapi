@@ -18,8 +18,6 @@ class Task(EntityMeta):
     owner = relationship("UserModel", back_populates="tasks")
 
     task_instances = relationship("TaskInstance", back_populates="task")
-    completed_instances = relationship("CompletedTask", back_populates="task")
-    failed_instances = relationship("FailedTask", back_populates="task")
 
 
 class TaskInstance(EntityMeta):
@@ -33,25 +31,3 @@ class TaskInstance(EntityMeta):
     status = Column(String, default="pending")
 
     task = relationship("Task", back_populates="task_instances")
-
-
-class CompletedTask(EntityMeta):
-    __tablename__ = "completed_tasks"
-
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(String)
-    completed_at = Column(DateTime, default=datetime.utcnow)
-    task_id = Column(Integer, ForeignKey("tasks.id"))
-    task = relationship("Task", back_populates="completed_instances")
-
-
-class FailedTask(EntityMeta):
-    __tablename__ = "failed_tasks"
-
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(String)
-    failed_at = Column(DateTime, default=datetime.utcnow)
-    task_id = Column(Integer, ForeignKey("tasks.id"))
-    task = relationship("Task", back_populates="failed_instances")

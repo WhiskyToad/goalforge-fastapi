@@ -79,6 +79,27 @@ class TaskService:
             status=task_instance.status,
         )
 
+    async def uncomplete_task_instance(self, task_instance_id: int, user_id: str):
+        task_instance = await self.task_repository.uncomplete_task_instance(
+            task_instance_id, user_id
+        )
+        if task_instance is None:
+            raise CustomError(
+                status_code=status.HTTP_404_NOT_FOUND,
+                message="Task not found",
+            )
+
+        return TaskInstanceSchema(
+            task_id=task_instance.task.id,
+            title=task_instance.task.title,
+            description=task_instance.task.description,
+            id=task_instance.id,
+            completed=task_instance.completed,
+            completed_at=task_instance.completed_at,
+            due_date=task_instance.due_date,
+            status=task_instance.status,
+        )
+
     async def edit_task(self, task_input: EditTaskInput, user_id: str):
         task = await self.task_repository.edit_task(task_input, user_id)
         if task is None:
