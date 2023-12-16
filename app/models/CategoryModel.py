@@ -13,4 +13,4 @@ class TaskCategory(EntityMeta):
     created_at = Column(DateTime, default=datetime.utcnow)
     owner_id = Column(Integer, ForeignKey("users.id"))
 
-    tasks = relationship("Task", back_populates="tasks")
+    tasks = relationship("Task", back_populates="category")
