@@ -18,8 +18,8 @@ class CategoryService:
         self, category_input: CreateCategoryInput, user_id: str
     ) -> CategorySchema:
         category = await self.category_repository.create_category(
-            category_input, user_id, date.today()
+            category_input, user_id
         )
         return CategorySchema(
-            id=category.id, title=category.title, description=category.description
+            id=category.id, name=category.name, description=category.description
         )

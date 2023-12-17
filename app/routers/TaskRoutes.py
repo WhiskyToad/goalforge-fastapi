@@ -85,7 +85,7 @@ async def uncomplete_task_instance(
     status_code=status.HTTP_200_OK,
     response_model=TaskSchema,
 )
-async def complete_task_instance(
+async def edit_task(
     task_input: EditTaskInput,
     task_service: TaskService = Depends(TaskService),
     user_id: str = Depends(get_user_id_from_token),

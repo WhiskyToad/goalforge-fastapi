@@ -1,5 +1,6 @@
 from app.routers.UserRoutes import UserRouter
 from app.routers.TaskRoutes import TaskRouter
+from app.routers.CategoryRoutes import CategoryRouter
 from fastapi import FastAPI
 from dotenv import load_dotenv
 
@@ -26,3 +27,4 @@ async def custom_exception_handler(request, exc):
 
 app.include_router(UserRouter)
 app.include_router(TaskRouter)
+app.include_router(CategoryRouter)
