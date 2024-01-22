@@ -112,3 +112,17 @@ class TaskRepository:
         self.db.commit()
         self.db.refresh(task)
         return task
+
+    async def delete_task_instance(self, instance_id: int, user_id: str):
+        task_instance = (
+            self.db.query(TaskInstance)
+            .join(Task, Task.id == TaskInstance.task_id)
+            .filter(
+                TaskInstance.id == instance_id,
+                Task.owner_id == user_id,
+            )
+            .first()
+        )
+        self.db.delete(task_instance)
+        self.db.commit()
+        return {"success": True}

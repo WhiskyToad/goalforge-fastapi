@@ -130,3 +130,6 @@ class TaskService:
             due_date=task_instance.due_date,
             status=task_instance.status,
         )
+
+    def delete_task_instance(self, instance_id: int, user_id: str):
+        return self.task_repository.delete_task_instance(instance_id, user_id)

@@ -7,6 +7,7 @@ from app.schemas.TaskSchema import (
     EditTaskInput,
     TaskSchema,
 )
+from app.schemas.GenericSchema import SuccessMessage
 from app.services.TaskService import TaskService
 from datetime import date
 from typing import List
@@ -91,3 +92,16 @@ async def edit_task(
     user_id: str = Depends(get_user_id_from_token),
 ):
     return await task_service.edit_task(task_input, user_id)
+
+
+@TaskRouter.delete(
+    "/delete/instance/{instance_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=SuccessMessage,
+)
+async def delete_task_instance(
+    instance_id: int,
+    task_service: TaskService = Depends(TaskService),
+    user_id: str = Depends(get_user_id_from_token),
+):
+    return await task_service.delete_task_instance(instance_id, user_id)
