@@ -25,5 +25,4 @@ class CategoryService:
         )
 
     async def delete_category(self, category_id: int, user_id: str):
-        await self.category_repository.delete_category(category_id, user_id)
-        return {"message": "Category deleted successfully"}
+        return await self.category_repository.delete_category(category_id, user_id)

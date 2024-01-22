@@ -31,4 +31,4 @@ class CategoryRepository:
         )
         self.db.delete(category)
         self.db.commit()
-        return category
+        return {"success": True}

@@ -4,6 +4,7 @@ from app.schemas.CategorySchema import (
     CreateCategoryInput,
     CategorySchema,
 )
+from app.schemas.GenericSchema import SuccessMessage
 from app.services.CategoryService import CategoryService
 
 
@@ -26,6 +27,7 @@ async def create_category(
 @CategoryRouter.delete(
     "/delete/{category_id}",
     status_code=status.HTTP_200_OK,
+    response_model=SuccessMessage,
 )
 async def delete_category(
     category_id: int,
