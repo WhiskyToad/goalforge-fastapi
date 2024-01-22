@@ -22,3 +22,13 @@ class CategoryRepository:
         self.db.commit()
         self.db.refresh(category)
         return category
+
+    async def delete_category(self, category_id: int, user_id: int):
+        category = (
+            self.db.query(TaskCategory)
+            .filter(TaskCategory.id == category_id, TaskCategory.owner_id == user_id)
+            .first()
+        )
+        self.db.delete(category)
+        self.db.commit()
+        return category

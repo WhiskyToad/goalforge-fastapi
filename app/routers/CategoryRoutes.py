@@ -21,3 +21,15 @@ async def create_category(
     category_service: CategoryService = Depends(CategoryService),
 ):
     return await category_service.create_category(category_input, user_id)
+
+
+@CategoryRouter.delete(
+    "/delete/{category_id}",
+    status_code=status.HTTP_200_OK,
+)
+async def delete_category(
+    category_id: int,
+    user_id: str = Depends(get_user_id_from_token),
+    category_service: CategoryService = Depends(CategoryService),
+):
+    return await category_service.delete_category(category_id, user_id)
