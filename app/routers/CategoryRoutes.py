@@ -49,3 +49,15 @@ async def edit_category(
     category_service: CategoryService = Depends(CategoryService),
 ):
     return await category_service.edit_category(category_id, category_input, user_id)
+
+
+@CategoryRouter.get(
+    "/all",
+    status_code=status.HTTP_200_OK,
+    response_model=list[CategorySchema],
+)
+async def get_all_categories(
+    user_id: str = Depends(get_user_id_from_token),
+    category_service: CategoryService = Depends(CategoryService),
+):
+    return await category_service.get_all_categories(user_id)

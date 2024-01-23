@@ -48,3 +48,9 @@ class CategoryRepository:
         self.db.commit()
         self.db.refresh(category)
         return category
+
+    async def get_all_categories(self, user_id: int):
+        categories = (
+            self.db.query(TaskCategory).filter(TaskCategory.owner_id == user_id).all()
+        )
+        return categories

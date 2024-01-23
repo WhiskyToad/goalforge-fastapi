@@ -41,3 +41,12 @@ class CategoryService:
         return CategorySchema(
             id=category.id, name=category.name, description=category.description
         )
+
+    async def get_all_categories(self, user_id: str):
+        categories = await self.category_repository.get_all_categories(user_id)
+        return [
+            CategorySchema(
+                id=category.id, name=category.name, description=category.description
+            )
+            for category in categories
+        ]
