@@ -1,7 +1,7 @@
-from fastapi import Depends
+from fastapi import Depends, status
 from typing import Type
 from app.repositories.CategoryRepository import CategoryRepository
-from datetime import date
+from app.errors.CustomError import CustomError
 from app.schemas.CategorySchema import CategorySchema, CreateCategoryInput
 
 
@@ -33,6 +33,11 @@ class CategoryService:
         category = await self.category_repository.edit_category(
             category_id, category_input, user_id
         )
+        if not category:
+            raise CustomError(
+                status_code=status.HTTP_404_NOT_FOUND,
+                message="Category not found",
+            )
         return CategorySchema(
             id=category.id, name=category.name, description=category.description
         )

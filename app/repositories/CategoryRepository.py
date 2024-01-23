@@ -41,6 +41,8 @@ class CategoryRepository:
             .filter(TaskCategory.id == category_id, TaskCategory.owner_id == user_id)
             .first()
         )
+        if not category:
+            return None
         category.name = category_input.name
         category.description = category_input.description
         self.db.commit()
