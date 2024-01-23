@@ -32,3 +32,17 @@ class CategoryRepository:
         self.db.delete(category)
         self.db.commit()
         return {"success": True}
+
+    async def edit_category(
+        self, category_id: int, category_input: CreateCategoryInput, user_id: int
+    ):
+        category = (
+            self.db.query(TaskCategory)
+            .filter(TaskCategory.id == category_id, TaskCategory.owner_id == user_id)
+            .first()
+        )
+        category.name = category_input.name
+        category.description = category_input.description
+        self.db.commit()
+        self.db.refresh(category)
+        return category

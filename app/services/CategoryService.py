@@ -26,3 +26,13 @@ class CategoryService:
 
     async def delete_category(self, category_id: int, user_id: str):
         return await self.category_repository.delete_category(category_id, user_id)
+
+    async def edit_category(
+        self, category_id: int, category_input: CreateCategoryInput, user_id: str
+    ) -> CategorySchema:
+        category = await self.category_repository.edit_category(
+            category_id, category_input, user_id
+        )
+        return CategorySchema(
+            id=category.id, name=category.name, description=category.description
+        )
