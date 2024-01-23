@@ -105,3 +105,16 @@ async def delete_task_instance(
     user_id: str = Depends(get_user_id_from_token),
 ):
     return await task_service.delete_task_instance(instance_id, user_id)
+
+
+@TaskRouter.get(
+    "/category/{category_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=List[TaskSchema],
+)
+async def get_tasks_by_category(
+    category_id: int,
+    task_service: TaskService = Depends(TaskService),
+    user_id: str = Depends(get_user_id_from_token),
+):
+    return await task_service.get_tasks_by_category(category_id, user_id)
