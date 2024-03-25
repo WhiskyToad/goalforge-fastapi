@@ -1,6 +1,6 @@
 from fastapi import Depends, APIRouter
-from app.services.UserService import UserService
-from app.schemas.UserSchema import UserSignup, User
+from app.user.UserService import UserService
+from app.user.UserSchema import UserSignup, User
 from typing import Annotated
 from fastapi.security import OAuth2PasswordRequestForm
 from app.schemas.JwtSchema import Token

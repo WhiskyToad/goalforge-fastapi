@@ -1,6 +1,6 @@
 from typing import Optional
 from fastapi import Depends
-from app.models.UserModel import UserModel
+from app.user.UserModel import UserModel
 from sqlalchemy.orm import Session
 from app.config.Database import get_db_connection
 

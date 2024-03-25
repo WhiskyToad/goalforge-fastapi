@@ -1,5 +1,5 @@
 from fastapi import Depends
-from app.repositories.UserRepository import UserRepository
+from app.user.UserRepository import UserRepository
 from app.utils.security import SecurityUtils
 from app.schemas.JwtSchema import Token
 from datetime import timedelta

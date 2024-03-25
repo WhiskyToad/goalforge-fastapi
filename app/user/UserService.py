@@ -1,8 +1,8 @@
 from fastapi import Depends
-from app.repositories.UserRepository import UserRepository
-from app.models.UserModel import UserModel
+from app.user.UserRepository import UserRepository
+from app.user.UserModel import UserModel
 from app.schemas.JwtSchema import Token
-from app.schemas.UserSchema import User, UserSignup
+from app.user.UserSchema import User, UserSignup
 from app.services.JwtService import JwtService
 from app.utils.security import SecurityUtils
 from app.errors.CustomError import CustomError
