@@ -17,9 +17,6 @@ class Task(EntityMeta):
     owner_id = mapped_column(Integer, ForeignKey("users.id"))
     owner = relationship("UserModel", back_populates="tasks")
 
-    category_id = mapped_column(Integer, ForeignKey("task_categories.id"))
-    category = relationship("TaskCategory", back_populates="tasks")
-
     task_instances = relationship("TaskInstance", back_populates="task")
 
 
