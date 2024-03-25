@@ -1,6 +1,6 @@
 from sqlalchemy import Integer, String, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship, mapped_column
-from datetime import datetime
+from datetime import datetime, timezone
 from app.models.BaseModel import EntityMeta
 
 
@@ -12,7 +12,7 @@ class Task(EntityMeta):
     description = mapped_column(String)
     recurring = mapped_column(Boolean, default=False)
     recurring_interval = mapped_column(String, nullable=True)
-    created_at = mapped_column(DateTime, default=datetime.utcnow)
+    created_at = mapped_column(DateTime, default=datetime.now(timezone.utc))
 
     owner_id = mapped_column(Integer, ForeignKey("users.id"))
     owner = relationship("UserModel", back_populates="tasks")

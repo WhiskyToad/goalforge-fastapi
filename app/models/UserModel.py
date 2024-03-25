@@ -1,14 +1,14 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Integer, String
 from app.models.BaseModel import EntityMeta
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, mapped_column
 
 
 class UserModel(EntityMeta):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    username = Column(String, index=True)
-    hashed_password = Column(String)
+    id = mapped_column(Integer, primary_key=True, index=True)
+    email = mapped_column(String, unique=True, index=True)
+    username = mapped_column(String, index=True)
+    hashed_password = mapped_column(String)
 
     tasks = relationship("Task", back_populates="owner")

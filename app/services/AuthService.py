@@ -1,6 +1,5 @@
 from fastapi import Depends
 from app.repositories.UserRepository import UserRepository
-from typing import Type
 from app.utils.security import SecurityUtils
 from app.schemas.JwtSchema import Token
 from datetime import timedelta
@@ -9,13 +8,13 @@ from app.errors.CustomError import CustomError
 
 
 class AuthService:
-    user_repository: Type[UserRepository]
-    security_utils: Type[SecurityUtils]
-    jwt_service: Type[JwtService]
+    user_repository: UserRepository
+    security_utils: SecurityUtils
+    jwt_service: JwtService
 
     def __init__(
         self,
-        user_repository: Type[UserRepository] = Depends(UserRepository),
+        user_repository: UserRepository = Depends(UserRepository),
         security_utils: SecurityUtils = Depends(SecurityUtils),
         jwt_service: JwtService = Depends(JwtService),
     ) -> None:
@@ -34,7 +33,7 @@ class AuthService:
         access_token = self.jwt_service.create_access_token(
             {"sub": str(user.id)}, expires_delta=access_token_expires
         )
-        return {"access_token": access_token, "token_type": "bearer"}
+        return Token(access_token=access_token, token_type="bearer")
 
     def authenticate_user(
         self,
