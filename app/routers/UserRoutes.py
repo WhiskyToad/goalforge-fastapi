@@ -32,4 +32,4 @@ async def read_users_me(
     user_id: str = Depends(get_user_id_from_token),
     user_service: UserService = Depends(UserService),
 ):
-    return user_service.get_current_user(user_id).normalize()
+    return user_service.get_current_user(int(user_id))
