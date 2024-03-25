@@ -1,5 +1,5 @@
 from sqlalchemy import Integer, String
-from app.models.BaseModel import EntityMeta
+from app.shared.models.BaseModel import EntityMeta
 from sqlalchemy.orm import relationship, mapped_column
 
 

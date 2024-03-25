@@ -1,14 +1,14 @@
 from fastapi import Depends, status
-from app.repositories.TaskRepository import TaskRepository
-from app.schemas.TaskSchema import (
+from app.task.TaskRepository import TaskRepository
+from app.task.TaskSchema import (
     CreateTaskInput,
     TaskInstanceSchema,
     CreateTaskInstanceInput,
     EditTaskInput,
     TaskSchema,
 )
-from app.models.TaskModel import Task, TaskInstance
-from app.errors.CustomError import CustomError
+from app.task.TaskModel import Task, TaskInstance
+from app.shared.errors.CustomError import CustomError
 from datetime import date
 
 TASK_NOT_FOUND = "Task not found"

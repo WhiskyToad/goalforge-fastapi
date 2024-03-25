@@ -1,6 +1,6 @@
 from app.user.UserRoutes import UserRouter
-from app.routers.TaskRoutes import TaskRouter
-from app.routers.CategoryRoutes import CategoryRouter
+from app.task.TaskRoutes import TaskRouter
+from app.categories.CategoryRoutes import CategoryRouter
 from fastapi import FastAPI, Request
 from dotenv import load_dotenv
 

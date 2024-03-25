@@ -1,8 +1,8 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from app.config.Database import get_db_connection
-from app.schemas.TaskSchema import CreateTaskInput, EditTaskInput
-from app.models.TaskModel import Task, TaskInstance
+from app.shared.config.Database import get_db_connection
+from app.task.TaskSchema import CreateTaskInput, EditTaskInput
+from app.task.TaskModel import Task, TaskInstance
 from typing import Optional
 from sqlalchemy import func
 from datetime import date

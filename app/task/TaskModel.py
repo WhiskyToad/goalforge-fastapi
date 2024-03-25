@@ -1,7 +1,7 @@
 from sqlalchemy import Integer, String, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship, mapped_column
 from datetime import datetime, timezone
-from app.models.BaseModel import EntityMeta
+from app.shared.models.BaseModel import EntityMeta
 
 
 class Task(EntityMeta):

@@ -1,14 +1,14 @@
 from fastapi import Depends, APIRouter, status
-from app.utils.auth import get_user_id_from_token
-from app.schemas.TaskSchema import (
+from app.auth.auth_utils import get_user_id_from_token
+from app.task.TaskSchema import (
     CreateTaskInput,
     TaskInstanceSchema,
     CreateTaskInstanceInput,
     EditTaskInput,
     TaskSchema,
 )
-from app.schemas.GenericSchema import SuccessMessage
-from app.services.TaskService import TaskService
+from app.shared.schemas.GenericSchema import SuccessMessage
+from app.task.TaskService import TaskService
 from datetime import date
 from typing import List
 

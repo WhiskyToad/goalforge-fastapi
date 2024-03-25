@@ -1,8 +1,8 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from app.config.Database import get_db_connection
-from app.models.CategoryModel import TaskCategory
-from app.schemas.CategorySchema import CreateCategoryInput
+from app.categories.CategoryModel import TaskCategory
+from app.categories.CategorySchema import CreateCategoryInput
 
 
 class CategoryRepository:

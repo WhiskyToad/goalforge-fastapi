@@ -1,10 +1,10 @@
 from fastapi import Depends
 from app.user.UserRepository import UserRepository
-from app.utils.security import SecurityUtils
-from app.schemas.JwtSchema import Token
+from app.shared.utils.security import SecurityUtils
+from app.jwt.JwtSchema import Token
 from datetime import timedelta
-from app.services.JwtService import JwtService
-from app.errors.CustomError import CustomError
+from app.jwt.JwtService import JwtService
+from app.shared.errors.CustomError import CustomError
 
 
 class AuthService:

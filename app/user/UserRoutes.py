@@ -3,9 +3,9 @@ from app.user.UserService import UserService
 from app.user.UserSchema import UserSignup, User
 from typing import Annotated
 from fastapi.security import OAuth2PasswordRequestForm
-from app.schemas.JwtSchema import Token
-from app.services.AuthService import AuthService
-from app.utils.auth import get_user_id_from_token
+from app.jwt.JwtSchema import Token
+from app.auth.AuthService import AuthService
+from app.auth.auth_utils import get_user_id_from_token
 
 
 UserRouter = APIRouter(prefix="/api/user", tags=["user"])

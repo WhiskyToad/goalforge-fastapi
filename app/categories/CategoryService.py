@@ -1,8 +1,8 @@
 from fastapi import Depends, status
 from typing import Type
-from app.repositories.CategoryRepository import CategoryRepository
+from app.categories.CategoryRepository import CategoryRepository
 from app.errors.CustomError import CustomError
-from app.schemas.CategorySchema import CategorySchema, CreateCategoryInput
+from app.categories.CategorySchema import CategorySchema, CreateCategoryInput
 
 
 class CategoryService:

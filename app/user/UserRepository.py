@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi import Depends
 from app.user.UserModel import UserModel
 from sqlalchemy.orm import Session
-from app.config.Database import get_db_connection
+from app.shared.config.Database import get_db_connection
 
 
 class UserRepository:

@@ -1,11 +1,11 @@
 from fastapi import Depends, APIRouter, status
 from app.utils.auth import get_user_id_from_token
-from app.schemas.CategorySchema import (
+from app.categories.CategorySchema import (
     CreateCategoryInput,
     CategorySchema,
 )
 from app.schemas.GenericSchema import SuccessMessage
-from app.services.CategoryService import CategoryService
+from app.categories.CategoryService import CategoryService
 
 
 CategoryRouter = APIRouter(prefix="/api/category", tags=["category"])
