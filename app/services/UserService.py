@@ -3,7 +3,6 @@ from app.repositories.UserRepository import UserRepository
 from app.models.UserModel import UserModel
 from app.schemas.JwtSchema import Token
 from app.schemas.UserSchema import User, UserSignup
-from typing import Type
 from app.services.JwtService import JwtService
 from app.utils.security import SecurityUtils
 from app.errors.CustomError import CustomError
@@ -11,17 +10,17 @@ from app.services.AuthService import AuthService
 
 
 class UserService:
-    user_repository: Type[UserRepository]
-    security_utils: Type[SecurityUtils]
-    jwt_service: Type[JwtService]
-    auth_service: Type[AuthService]
+    user_repository: UserRepository
+    security_utils: SecurityUtils
+    jwt_service: JwtService
+    auth_service: AuthService
 
     def __init__(
         self,
-        user_repository: Type[UserRepository] = Depends(UserRepository),
-        security_utils: Type[SecurityUtils] = Depends(SecurityUtils),
-        jwt_service: Type[JwtService] = Depends(JwtService),
-        auth_service: Type[AuthService] = Depends(AuthService),
+        user_repository: UserRepository = Depends(UserRepository),
+        security_utils: SecurityUtils = Depends(SecurityUtils),
+        jwt_service: JwtService = Depends(JwtService),
+        auth_service: AuthService = Depends(AuthService),
     ) -> None:
         self.user_repository = user_repository
         self.security_utils = security_utils

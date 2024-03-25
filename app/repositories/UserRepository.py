@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import Depends
 from app.models.UserModel import UserModel
 from sqlalchemy.orm import Session
@@ -16,8 +17,8 @@ class UserRepository:
         self.db.refresh(user)
         return user
 
-    def get_user_by_id(self, user_id: int) -> UserModel:
+    def get_user_by_id(self, user_id: int) -> Optional[UserModel]:
         return self.db.query(UserModel).filter(UserModel.id == user_id).first()
 
-    def get_user_by_email(self, email: str) -> UserModel:
+    def get_user_by_email(self, email: str) -> Optional[UserModel]:
         return self.db.query(UserModel).filter(UserModel.email == email).first()
