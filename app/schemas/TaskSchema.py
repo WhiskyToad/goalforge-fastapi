@@ -22,12 +22,12 @@ class EditTaskInput(TaskBase):
 
 
 class CreateTaskInput(TaskBase):
-    due_date: datetime
+    due_date: str
 
 
 class CreateTaskInstanceInput(BaseModel):
     task_id: int
-    due_date: datetime
+    due_date: str
 
 
 class TaskInstanceSchema(BaseModel):

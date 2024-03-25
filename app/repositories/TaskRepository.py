@@ -14,9 +14,7 @@ class TaskRepository:
     def __init__(self, db: Session = Depends(get_db_connection)) -> None:
         self.db = db
 
-    async def create_task(
-        self, task_input: CreateTaskInput, user_id: str
-    ) -> TaskInstance:
+    async def create_task(self, task_input: CreateTaskInput, user_id: str) -> Task:
         task = Task(
             title=task_input.title,
             description=task_input.description,

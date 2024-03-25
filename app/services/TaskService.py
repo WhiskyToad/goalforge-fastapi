@@ -1,5 +1,4 @@
 from fastapi import Depends, status
-from typing import Type
 from app.repositories.TaskRepository import TaskRepository
 from app.schemas.TaskSchema import (
     CreateTaskInput,
@@ -12,13 +11,15 @@ from app.models.TaskModel import Task, TaskInstance
 from app.errors.CustomError import CustomError
 from datetime import date
 
+TASK_NOT_FOUND = "Task not found"
+
 
 class TaskService:
-    task_repository: Type[TaskRepository]
+    task_repository: TaskRepository
 
     def __init__(
         self,
-        task_repository: Type[TaskRepository] = Depends(TaskRepository),
+        task_repository: TaskRepository = Depends(TaskRepository),
     ) -> None:
         self.task_repository = task_repository
 
@@ -38,11 +39,13 @@ class TaskService:
         task_input: CreateTaskInstanceInput,
         user_id: str,
     ) -> TaskInstanceSchema:
-        task = self.task_repository.get_task_by_id(task_input.task_id, user_id)
+        task = self.task_repository.get_task_by_id_and_owner(
+            task_input.task_id, user_id
+        )
         if task is None:
             raise CustomError(
                 status_code=status.HTTP_404_NOT_FOUND,
-                message="Task not found",
+                message=TASK_NOT_FOUND,
             )
         task_instance = await self.task_repository.create_task_instance(
             task_input.task_id, task_input.due_date
@@ -65,7 +68,7 @@ class TaskService:
         if task_instance is None:
             raise CustomError(
                 status_code=status.HTTP_404_NOT_FOUND,
-                message="Task not found",
+                message=TASK_NOT_FOUND,
             )
 
         return TaskInstanceSchema(
@@ -86,7 +89,7 @@ class TaskService:
         if task_instance is None:
             raise CustomError(
                 status_code=status.HTTP_404_NOT_FOUND,
-                message="Task not found",
+                message=TASK_NOT_FOUND,
             )
 
         return TaskInstanceSchema(
@@ -105,7 +108,7 @@ class TaskService:
         if task is None:
             raise CustomError(
                 status_code=status.HTTP_404_NOT_FOUND,
-                message="Task not found",
+                message=TASK_NOT_FOUND,
             )
         return TaskSchema(
             id=task.id,
@@ -119,7 +122,7 @@ class TaskService:
 
     def map_task_task_instances(
         self, task: Task, task_instance: TaskInstance
-    ) -> TaskInstance:
+    ) -> TaskInstanceSchema:
         return TaskInstanceSchema(
             task_id=task.id,
             title=task.title,
