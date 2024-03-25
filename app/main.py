@@ -1,7 +1,7 @@
 from app.routers.UserRoutes import UserRouter
 from app.routers.TaskRoutes import TaskRouter
 from app.routers.CategoryRoutes import CategoryRouter
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from dotenv import load_dotenv
 
 from fastapi.responses import JSONResponse
@@ -13,7 +13,7 @@ app = FastAPI()
 
 
 @app.exception_handler(RequestValidationError)
-async def custom_exception_handler(request, exc):
+async def custom_exception_handler(request: Request, exc: RequestValidationError):
     errors = exc.errors()
     return JSONResponse(
         status_code=422,
