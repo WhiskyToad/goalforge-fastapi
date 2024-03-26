@@ -1,8 +1,8 @@
 """Initial migration
 
-Revision ID: da5d91968701
+Revision ID: dc4627915194
 Revises: 
-Create Date: 2024-03-25 19:57:25.150034
+Create Date: 2024-03-26 21:17:37.140650
 
 """
 from typing import Sequence, Union
@@ -13,7 +13,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'da5d91968701'
+revision: str = 'dc4627915194'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -37,7 +37,7 @@ def upgrade() -> None:
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('recurring', sa.Boolean(), nullable=True),
     sa.Column('recurring_interval', sa.String(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('owner_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -47,9 +47,9 @@ def upgrade() -> None:
     op.create_table('task_instances',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('completed', sa.Boolean(), nullable=True),
-    sa.Column('completed_at', sa.DateTime(), nullable=True),
+    sa.Column('completed_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('task_id', sa.Integer(), nullable=True),
-    sa.Column('due_date', sa.DateTime(), nullable=True),
+    sa.Column('due_date', sa.DateTime(timezone=True), nullable=True),
     sa.Column('status', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['task_id'], ['tasks.id'], ),
     sa.PrimaryKeyConstraint('id')

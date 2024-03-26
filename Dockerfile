@@ -1,9 +1,12 @@
 FROM python:3
 ENV PYTHONUNBUFFERED=1
-# RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
-ENV PYTHONUNBUFFERED=1
+
+# Install Poetry
+RUN pip install poetry==1.4.2
+
 WORKDIR /app
-COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
+# Copy poetry files
+COPY pyproject.toml poetry.lock ./
 COPY . /app
+RUN poetry install --without dev && rm -rf $POETRY_CACHE_DIR
 EXPOSE 8000
