@@ -1,7 +1,7 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from app.shared.config.Database import get_db_connection
-from app.task.TaskSchema import CreateTaskInput, EditTaskInput
+from app.task.TaskSchema import EditTaskInput
 from app.task.TaskModel import Task, TaskInstance
 from typing import Optional
 from sqlalchemy import func
@@ -14,20 +14,14 @@ class TaskRepository:
     def __init__(self, db: Session = Depends(get_db_connection)) -> None:
         self.db = db
 
-    async def create_task(self, task_input: CreateTaskInput, user_id: str) -> Task:
-        task = Task(
-            title=task_input.title,
-            description=task_input.description,
-            recurring=task_input.recurring,
-            owner_id=user_id,
-        )
+    async def create_task(self, task: Task) -> Task:
         self.db.add(task)
         self.db.commit()
         self.db.refresh(task)
         return task
 
     async def create_task_instance(
-        self, task_id: int, due_date: Optional[str]
+        self, task_id: int, due_date: Optional[date]
     ) -> TaskInstance:
         task_instance = TaskInstance(task_id=task_id, due_date=due_date)
         self.db.add(task_instance)

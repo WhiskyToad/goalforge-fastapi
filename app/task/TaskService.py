@@ -9,7 +9,7 @@ from app.task.TaskSchema import (
 )
 from app.task.TaskModel import Task, TaskInstance
 from app.shared.errors.CustomError import CustomError
-from datetime import date
+from datetime import date, datetime
 
 TASK_NOT_FOUND = "Task not found"
 
@@ -28,11 +28,17 @@ class TaskService:
         task_input: CreateTaskInput,
         user_id: str,
     ) -> TaskInstanceSchema:
-        task = await self.task_repository.create_task(task_input, user_id)
-        task_instance = await self.task_repository.create_task_instance(
-            task.id, task_input.due_date
+        task = Task(
+            title=task_input.title,
+            description=task_input.description,
+            recurring=task_input.recurring,
+            owner_id=user_id,
         )
-        return self.map_task_task_instances(task, task_instance)
+        task_in_db = await self.task_repository.create_task(task)
+        task_instance = await self.task_repository.create_task_instance(
+            task.id, datetime.fromisoformat(task_input.due_date)
+        )
+        return self.map_task_task_instances(task_in_db, task_instance)
 
     async def create_task_instance(
         self,
@@ -48,7 +54,7 @@ class TaskService:
                 message=TASK_NOT_FOUND,
             )
         task_instance = await self.task_repository.create_task_instance(
-            task_input.task_id, task_input.due_date
+            task_input.task_id, datetime.fromisoformat(task_input.due_date)
         )
         return self.map_task_task_instances(task, task_instance)
 
