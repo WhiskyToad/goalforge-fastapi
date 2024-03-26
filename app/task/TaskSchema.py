@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
@@ -13,7 +12,7 @@ class TaskBase(BaseModel):
 
 class TaskSchema(TaskBase):
     id: int
-    created_at: datetime
+    created_at: str
     owner_id: int
 
 
@@ -36,6 +35,6 @@ class TaskInstanceSchema(BaseModel):
     description: str
     id: int
     completed: bool
-    completed_at: Optional[datetime]
-    due_date: Optional[datetime]
+    completed_at: Optional[str]
+    due_date: Optional[str]
     status: str
