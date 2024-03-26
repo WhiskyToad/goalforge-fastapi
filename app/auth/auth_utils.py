@@ -10,7 +10,7 @@ SECRET_KEY = os.environ.get("JWT_SECRET", "")
 ALGORITHM = os.environ.get("JWT_ALGORITHM", "")
 
 
-async def get_user_id_from_token(token: str = Depends(oauth2_scheme)):
+async def get_user_id_from_token(token: str = Depends(oauth2_scheme)) -> int:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get("sub")

@@ -51,4 +51,4 @@ class UserService:
         user = self.user_repository.get_user_by_id(user_id)
         if user is None:
             raise CustomError(status_code=400, message="No user found")
-        return user
+        return User(email=user.email, id=user.id, username=user.username)
