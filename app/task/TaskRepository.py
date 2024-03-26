@@ -118,11 +118,3 @@ class TaskRepository:
         self.db.delete(task_instance)
         self.db.commit()
         return {"success": True}
-
-    async def get_tasks_by_category(self, category_id: int, user_id: str):
-        tasks = (
-            self.db.query(Task)
-            .filter(Task.owner_id == user_id, Task.category_id == category_id)
-            .all()
-        )
-        return tasks

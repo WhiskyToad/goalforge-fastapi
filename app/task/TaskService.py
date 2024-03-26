@@ -142,18 +142,3 @@ class TaskService:
 
     def delete_task_instance(self, instance_id: int, user_id: str):
         return self.task_repository.delete_task_instance(instance_id, user_id)
-
-    async def get_tasks_by_category(self, category_id: int, user_id: str):
-        tasks = await self.task_repository.get_tasks_by_category(category_id, user_id)
-        return [
-            TaskSchema(
-                id=task.id,
-                title=task.title,
-                description=task.description,
-                recurring=task.recurring,
-                recurring_interval=task.recurring_interval,
-                created_at=task.created_at,
-                owner_id=task.owner_id,
-            )
-            for task in tasks
-        ]
