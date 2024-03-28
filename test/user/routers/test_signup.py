@@ -1,3 +1,4 @@
+from fastapi.testclient import TestClient
 import pytest
 from test.utils.cleanup import cleanup_users_db
 
@@ -5,7 +6,7 @@ SIGNUP_URL = "/api/user/signup"
 TEST_USER_EMAIL = "test@test.com"
 
 
-def test_signup_success(test_client):
+def test_signup_success(test_client: TestClient):
     response = test_client.post(
         SIGNUP_URL,
         json={"email": TEST_USER_EMAIL, "password": "123456", "username": "test"},
@@ -13,7 +14,7 @@ def test_signup_success(test_client):
     assert response.status_code == 201
 
 
-def test_signup_invalid_email(test_client):
+def test_signup_invalid_email(test_client: TestClient):
     response = test_client.post(
         SIGNUP_URL,
         json={"email": "test", "password": "123456", "username": "test"},
@@ -29,7 +30,7 @@ def test_signup_invalid_email(test_client):
     }
 
 
-def test_signup_missing_details(test_client):
+def test_signup_missing_details(test_client: TestClient):
     response_missing_email = test_client.post(
         SIGNUP_URL,
         json={"password": "123456", "username": "test"},
@@ -50,7 +51,7 @@ def test_signup_missing_details(test_client):
     }
 
 
-def test_signup_duplicate_emails(test_client):
+def test_signup_duplicate_emails(test_client: TestClient):
     # Second signup with the same email
     response_second_signup = test_client.post(
         SIGNUP_URL,
@@ -62,7 +63,7 @@ def test_signup_duplicate_emails(test_client):
     }
 
 
-def test_signup_sets_cookie(test_client):
+def test_signup_sets_cookie(test_client: TestClient):
     response = test_client.post(
         SIGNUP_URL,
         json={"email": "test1@test.com", "password": "123456", "username": "test"},

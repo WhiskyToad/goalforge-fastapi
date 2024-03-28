@@ -4,7 +4,7 @@ from app.user.UserModel import UserModel
 from test.conftest import TestingSessionLocal
 
 
-def seed_database_user():
+def seed_database_user() -> str:
     db = TestingSessionLocal()
     # Create a test user in the database
     hashed_password = SecurityUtils().get_password_hash("password")
