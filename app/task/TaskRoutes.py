@@ -5,6 +5,7 @@ from app.task.TaskSchema import (
     TaskInstanceSchema,
     CreateTaskInstanceInput,
     EditTaskInput,
+    TaskItem,
     TaskSchema,
 )
 from app.shared.schemas.GenericSchema import SuccessMessage
@@ -23,7 +24,7 @@ TaskRouter = APIRouter(prefix="/api/task", tags=["task"])
 )
 async def create_task(
     task_input: CreateTaskInput,
-    user_id: str = Depends(get_user_id_from_token),
+    user_id: int = Depends(get_user_id_from_token),
     task_service: TaskService = Depends(TaskService),
 ):
     return await task_service.create_task(task_input, user_id)
@@ -36,7 +37,7 @@ async def create_task(
 )
 async def create_task_instance(
     task_input: CreateTaskInstanceInput,
-    user_id: str = Depends(get_user_id_from_token),
+    user_id: int = Depends(get_user_id_from_token),
     task_service: TaskService = Depends(TaskService),
 ):
     return await task_service.create_task_instance(task_input, user_id)
@@ -50,7 +51,7 @@ async def create_task_instance(
 async def get_tasks_by_due_date(
     due_date: date = date.today(),
     task_service: TaskService = Depends(TaskService),
-    user_id: str = Depends(get_user_id_from_token),
+    user_id: int = Depends(get_user_id_from_token),
 ):
     return await task_service.get_tasks_by_due_date(due_date, user_id)
 
@@ -63,7 +64,7 @@ async def get_tasks_by_due_date(
 async def complete_task_instance(
     task_instance_id: int,
     task_service: TaskService = Depends(TaskService),
-    user_id: str = Depends(get_user_id_from_token),
+    user_id: int = Depends(get_user_id_from_token),
 ):
     return await task_service.complete_task_instance(task_instance_id, user_id)
 
@@ -76,7 +77,7 @@ async def complete_task_instance(
 async def uncomplete_task_instance(
     task_instance_id: int,
     task_service: TaskService = Depends(TaskService),
-    user_id: str = Depends(get_user_id_from_token),
+    user_id: int = Depends(get_user_id_from_token),
 ):
     return await task_service.uncomplete_task_instance(task_instance_id, user_id)
 
@@ -89,7 +90,7 @@ async def uncomplete_task_instance(
 async def edit_task(
     task_input: EditTaskInput,
     task_service: TaskService = Depends(TaskService),
-    user_id: str = Depends(get_user_id_from_token),
+    user_id: int = Depends(get_user_id_from_token),
 ):
     return await task_service.edit_task(task_input, user_id)
 
@@ -102,6 +103,18 @@ async def edit_task(
 async def delete_task_instance(
     instance_id: int,
     task_service: TaskService = Depends(TaskService),
-    user_id: str = Depends(get_user_id_from_token),
+    user_id: int = Depends(get_user_id_from_token),
 ):
     return await task_service.delete_task_instance(instance_id, user_id)
+
+
+@TaskRouter.get(
+    "/tasks/list",
+    status_code=status.HTTP_200_OK,
+    response_model=List[TaskItem],
+)
+async def get_task_list(
+    task_service: TaskService = Depends(TaskService),
+    user_id: int = Depends(get_user_id_from_token),
+):
+    return task_service.get_task_list(user_id)

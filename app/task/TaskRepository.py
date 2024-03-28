@@ -29,14 +29,14 @@ class TaskRepository:
         self.db.refresh(task_instance)
         return task_instance
 
-    def get_task_by_id_and_owner(self, task_id: int, owner_id: str):
+    def get_task_by_id_and_owner(self, task_id: int, owner_id: int):
         return (
             self.db.query(Task)
             .filter(Task.id == task_id, Task.owner_id == owner_id)
             .first()
         )
 
-    async def get_tasks_by_due_date(self, due_date: date, user_id: str):
+    async def get_tasks_by_due_date(self, due_date: date, user_id: int):
         tasks = (
             self.db.query(Task, TaskInstance)
             .join(TaskInstance, Task.id == TaskInstance.task_id)
@@ -48,7 +48,7 @@ class TaskRepository:
         )
         return tasks
 
-    async def complete_task_instance(self, task_instance_id: int, user_id: str):
+    async def complete_task_instance(self, task_instance_id: int, user_id: int):
         task_instance = (
             self.db.query(TaskInstance)
             .join(Task, Task.id == TaskInstance.task_id)
@@ -69,7 +69,7 @@ class TaskRepository:
         self.db.refresh(task_instance)
         return task_instance
 
-    async def uncomplete_task_instance(self, task_instance_id: int, user_id: str):
+    async def uncomplete_task_instance(self, task_instance_id: int, user_id: int):
         task_instance = (
             self.db.query(TaskInstance)
             .join(Task, Task.id == TaskInstance.task_id)
@@ -90,7 +90,7 @@ class TaskRepository:
         self.db.refresh(task_instance)
         return task_instance
 
-    async def edit_task(self, task_input: EditTaskInput, user_id: str):
+    async def edit_task(self, task_input: EditTaskInput, user_id: int):
         task = (
             self.db.query(Task)
             .filter(Task.id == task_input.task_id, Task.owner_id == user_id)
@@ -105,7 +105,7 @@ class TaskRepository:
         self.db.refresh(task)
         return task
 
-    async def delete_task_instance(self, instance_id: int, user_id: str):
+    async def delete_task_instance(self, instance_id: int, user_id: int):
         task_instance = (
             self.db.query(TaskInstance)
             .join(Task, Task.id == TaskInstance.task_id)
@@ -118,3 +118,13 @@ class TaskRepository:
         self.db.delete(task_instance)
         self.db.commit()
         return {"success": True}
+
+    async def get_task_list(self, user_id: int):
+        tasks_with_counts = (
+            self.db.query(Task, func.count(TaskInstance.completed))
+            .filter(Task.owner_id == user_id)
+            .outerjoin(Task.task_instances)
+            .group_by(Task.id)
+            .all()
+        )
+        return tasks_with_counts

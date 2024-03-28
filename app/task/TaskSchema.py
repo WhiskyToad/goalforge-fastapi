@@ -38,3 +38,8 @@ class TaskInstanceSchema(BaseModel):
     completed_at: Optional[str]
     due_date: Optional[str]
     status: str
+
+
+class TaskItem(BaseModel):
+    title: str
+    completed_instances: int

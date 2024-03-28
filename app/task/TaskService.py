@@ -5,6 +5,7 @@ from app.task.TaskSchema import (
     TaskInstanceSchema,
     CreateTaskInstanceInput,
     EditTaskInput,
+    TaskItem,
     TaskSchema,
 )
 from app.task.TaskModel import Task, TaskInstance
@@ -26,7 +27,7 @@ class TaskService:
     async def create_task(
         self,
         task_input: CreateTaskInput,
-        user_id: str,
+        user_id: int,
     ) -> TaskInstanceSchema:
         task = Task(
             title=task_input.title,
@@ -43,7 +44,7 @@ class TaskService:
     async def create_task_instance(
         self,
         task_input: CreateTaskInstanceInput,
-        user_id: str,
+        user_id: int,
     ) -> TaskInstanceSchema:
         task = self.task_repository.get_task_by_id_and_owner(
             task_input.task_id, user_id
@@ -58,7 +59,7 @@ class TaskService:
         )
         return self.map_task_task_instances(task, task_instance)
 
-    async def get_tasks_by_due_date(self, due_date: date, user_id: str):
+    async def get_tasks_by_due_date(self, due_date: date, user_id: int):
         task_instances = await self.task_repository.get_tasks_by_due_date(
             due_date, user_id
         )
@@ -67,7 +68,7 @@ class TaskService:
             for task, task_instance in task_instances
         ]
 
-    async def complete_task_instance(self, task_instance_id: int, user_id: str):
+    async def complete_task_instance(self, task_instance_id: int, user_id: int):
         task_instance = await self.task_repository.complete_task_instance(
             task_instance_id, user_id
         )
@@ -88,7 +89,7 @@ class TaskService:
             status=task_instance.status,
         )
 
-    async def uncomplete_task_instance(self, task_instance_id: int, user_id: str):
+    async def uncomplete_task_instance(self, task_instance_id: int, user_id: int):
         task_instance = await self.task_repository.uncomplete_task_instance(
             task_instance_id, user_id
         )
@@ -109,7 +110,7 @@ class TaskService:
             status=task_instance.status,
         )
 
-    async def edit_task(self, task_input: EditTaskInput, user_id: str):
+    async def edit_task(self, task_input: EditTaskInput, user_id: int):
         task = await self.task_repository.edit_task(task_input, user_id)
         if task is None:
             raise CustomError(
@@ -140,5 +141,15 @@ class TaskService:
             status=task_instance.status,
         )
 
-    def delete_task_instance(self, instance_id: int, user_id: str):
+    def delete_task_instance(self, instance_id: int, user_id: int):
         return self.task_repository.delete_task_instance(instance_id, user_id)
+
+    async def get_task_list(self, user_id: int):
+        tasks_with_counts = await self.task_repository.get_task_list(user_id)
+
+        task_items = [
+            TaskItem(title=task.title, completed_instances=count)
+            for task, count in tasks_with_counts
+        ]
+
+        return task_items
