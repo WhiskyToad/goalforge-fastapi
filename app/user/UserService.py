@@ -27,6 +27,12 @@ class UserService:
         self.jwt_service = jwt_service
         self.auth_service = auth_service
 
+    def _find_user_by_id(self, user_id: int):
+        user = self.user_repository.get_user_by_id(user_id)
+        if user is None:
+            raise CustomError(status_code=400, message="No user found")
+        return user
+
     async def signup(
         self,
         user_details: UserSignup,
@@ -48,9 +54,7 @@ class UserService:
         return token
 
     def get_current_user(self, user_id: int) -> User:
-        user = self.user_repository.get_user_by_id(user_id)
-        if user is None:
-            raise CustomError(status_code=400, message="No user found")
+        user = self._find_user_by_id(user_id)
         return User(email=user.email, id=user.id, username=user.username)
 
     async def edit_user_profile(
@@ -64,14 +68,12 @@ class UserService:
     async def change_user_password(
         self, password_details: UserChangePassword, user_id: int
     ) -> bool:
-        user = self.user_repository.get_user_by_id(user_id)
-        if user is None:
-            raise CustomError(status_code=400, message="No user found")
+        user = self._find_user_by_id(user_id)
         password_check = self.security_utils.verify_password(
             password_details.current_password, user.hashed_password
         )
         if not password_check:
-            raise CustomError(status_code=400, message="No user found")
+            raise CustomError(status_code=400, message="Password is incorrect")
         hashed_password = self.security_utils.get_password_hash(
             password_details.new_password
         )
