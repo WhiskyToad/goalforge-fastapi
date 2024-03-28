@@ -35,3 +35,12 @@ class UserRepository:
         self.db.commit()
         self.db.refresh(user)
         return user
+
+    async def change_password(self, new_password: str, user_id: int) -> bool:
+        user = self.db.query(UserModel).filter(UserModel.id == user_id).first()
+        if user is None:
+            return False
+        user.hashed_password = new_password
+        self.db.commit()
+        self.db.refresh(user)
+        return True

@@ -1,6 +1,6 @@
 from fastapi import Depends, APIRouter
 from app.user.UserService import UserService
-from app.user.UserSchema import UserEditProfile, UserSignup, User
+from app.user.UserSchema import UserChangePassword, UserEditProfile, UserSignup, User
 from typing import Annotated
 from fastapi.security import OAuth2PasswordRequestForm
 from app.jwt.JwtSchema import Token
@@ -42,3 +42,13 @@ async def edit_user_profile(
     user_service: UserService = Depends(UserService),
 ):
     return await user_service.edit_user_profile(updated_details, user_id)
+
+
+@UserRouter.patch("/edit/password", response_model=dict)
+async def change_user_password(
+    password_details: UserChangePassword,
+    user_id: int = Depends(get_user_id_from_token),
+    user_service: UserService = Depends(UserService),
+):
+    result = await user_service.change_user_password(password_details, user_id)
+    return {"result": result}

@@ -16,3 +16,8 @@ class UserSignup(BaseModel):
 class UserEditProfile(BaseModel):
     email: EmailStr
     username: str
+
+
+class UserChangePassword(BaseModel):
+    current_password: str
+    new_password: str

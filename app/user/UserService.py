@@ -2,7 +2,7 @@ from fastapi import Depends
 from app.user.UserRepository import UserRepository
 from app.user.UserModel import UserModel
 from app.jwt.JwtSchema import Token
-from app.user.UserSchema import User, UserEditProfile, UserSignup
+from app.user.UserSchema import User, UserChangePassword, UserEditProfile, UserSignup
 from app.jwt.JwtService import JwtService
 from app.shared.utils.security import SecurityUtils
 from app.shared.errors.CustomError import CustomError
@@ -60,3 +60,19 @@ class UserService:
         if user is None:
             raise CustomError(status_code=400, message="No user found")
         return User(email=user.email, id=user.id, username=user.username)
+
+    async def change_user_password(
+        self, password_details: UserChangePassword, user_id: int
+    ) -> bool:
+        user = self.user_repository.get_user_by_id(user_id)
+        if user is None:
+            raise CustomError(status_code=400, message="No user found")
+        password_check = self.security_utils.verify_password(
+            password_details.current_password, user.hashed_password
+        )
+        if not password_check:
+            raise CustomError(status_code=400, message="No user found")
+        hashed_password = self.security_utils.get_password_hash(
+            password_details.new_password
+        )
+        return await self.user_repository.change_password(hashed_password, user_id)
