@@ -1,7 +1,7 @@
+from app.jwt.JwtService import JwtService
+from app.shared.utils.security import SecurityUtils
+from app.user.UserModel import UserModel
 from test.conftest import TestingSessionLocal
-from app.models.UserModel import UserModel
-from app.utils.security import SecurityUtils
-from app.services.JwtService import JwtService
 
 
 def seed_database_user():

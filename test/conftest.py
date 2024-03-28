@@ -2,10 +2,11 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-from app.models.BaseModel import EntityMeta
-from app.config.Database import get_db_connection
 from app.main import app
 import pytest
+
+from app.shared.config.Database import get_db_connection
+from app.shared.models.BaseModel import EntityMeta
 
 SQLALCHEMY_DATABASE_URL = "sqlite://"
 
