@@ -2,7 +2,7 @@ from fastapi import Depends
 from app.user.UserRepository import UserRepository
 from app.user.UserModel import UserModel
 from app.jwt.JwtSchema import Token
-from app.user.UserSchema import User, UserSignup
+from app.user.UserSchema import User, UserEditProfile, UserSignup
 from app.jwt.JwtService import JwtService
 from app.shared.utils.security import SecurityUtils
 from app.shared.errors.CustomError import CustomError
@@ -49,6 +49,14 @@ class UserService:
 
     def get_current_user(self, user_id: int) -> User:
         user = self.user_repository.get_user_by_id(user_id)
+        if user is None:
+            raise CustomError(status_code=400, message="No user found")
+        return User(email=user.email, id=user.id, username=user.username)
+
+    async def edit_user_profile(
+        self, new_details: UserEditProfile, user_id: int
+    ) -> User:
+        user = await self.user_repository.edit_user_profile(new_details, user_id)
         if user is None:
             raise CustomError(status_code=400, message="No user found")
         return User(email=user.email, id=user.id, username=user.username)

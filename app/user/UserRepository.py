@@ -3,6 +3,7 @@ from fastapi import Depends
 from app.user.UserModel import UserModel
 from sqlalchemy.orm import Session
 from app.shared.config.Database import get_db_connection
+from app.user.UserSchema import UserEditProfile
 
 
 class UserRepository:
@@ -22,3 +23,15 @@ class UserRepository:
 
     def get_user_by_email(self, email: str) -> Optional[UserModel]:
         return self.db.query(UserModel).filter(UserModel.email == email).first()
+
+    async def edit_user_profile(
+        self, new_details: UserEditProfile, user_id: int
+    ) -> UserModel | None:
+        user = self.db.query(UserModel).filter(UserModel.id == user_id).first()
+        if user is None:
+            return None
+        user.email = new_details.email
+        user.username = new_details.username
+        self.db.commit()
+        self.db.refresh(user)
+        return user

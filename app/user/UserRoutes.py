@@ -1,6 +1,6 @@
 from fastapi import Depends, APIRouter
 from app.user.UserService import UserService
-from app.user.UserSchema import UserSignup, User
+from app.user.UserSchema import UserEditProfile, UserSignup, User
 from typing import Annotated
 from fastapi.security import OAuth2PasswordRequestForm
 from app.jwt.JwtSchema import Token
@@ -33,3 +33,12 @@ async def read_users_me(
     user_service: UserService = Depends(UserService),
 ):
     return user_service.get_current_user(user_id)
+
+
+@UserRouter.patch("/edit/profile", response_model=User)
+async def edit_user_profile(
+    updated_details: UserEditProfile,
+    user_id: int = Depends(get_user_id_from_token),
+    user_service: UserService = Depends(UserService),
+):
+    return await user_service.edit_user_profile(updated_details, user_id)
