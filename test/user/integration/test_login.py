@@ -1,6 +1,7 @@
 import pytest
 from test.utils.cleanup import cleanup_users_db
 from test.utils.db_seeding import seed_database_user
+from fastapi.testclient import TestClient
 
 LOGIN_URL = "/api/user/login"
 TEST_USER_EMAIL = "test@test.com"
@@ -12,7 +13,7 @@ def seed_database():
     seed_database_user()
 
 
-def test_login_success(test_client, seed_database):
+def test_login_success(test_client: TestClient, seed_database: str):
     response = test_client.post(
         LOGIN_URL,
         data={
@@ -25,7 +26,7 @@ def test_login_success(test_client, seed_database):
     assert response.json().get("token_type") == "bearer"
 
 
-def test_login_invalid_password(test_client):
+def test_login_invalid_password(test_client: TestClient):
     response = test_client.post(
         LOGIN_URL,
         data={
@@ -39,7 +40,7 @@ def test_login_invalid_password(test_client):
     }
 
 
-def test_login_invalid_username(test_client):
+def test_login_invalid_username(test_client: TestClient):
     response = test_client.post(
         LOGIN_URL,
         data={
@@ -53,7 +54,7 @@ def test_login_invalid_username(test_client):
     }
 
 
-def test_missing_details(test_client):
+def test_missing_details(test_client: TestClient):
     response_missing_email = test_client.post(
         LOGIN_URL,
         data={"password": "password"},

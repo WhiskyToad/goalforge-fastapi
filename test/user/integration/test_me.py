@@ -1,6 +1,7 @@
 import pytest
 from test.utils.cleanup import cleanup_users_db
 from test.utils.db_seeding import seed_database_user
+from fastapi.testclient import TestClient
 
 
 ME_ROUTE = "/api/user/me"
@@ -11,7 +12,7 @@ def seed_database():
     return seed_database_user()
 
 
-def test_read_users_me_with_valid_token(test_client, seed_database):
+def test_read_users_me_with_valid_token(test_client: TestClient, seed_database: str):
     # Provide a valid token for testing
     valid_token = seed_database
 
@@ -25,7 +26,7 @@ def test_read_users_me_with_valid_token(test_client, seed_database):
     assert response.json().get("username") == "test_user"
 
 
-def test_read_users_me_with_invalid_token(test_client):
+def test_read_users_me_with_invalid_token(test_client: TestClient):
     # Provide an invalid token for testing
     invalid_token = "bleh"
 
