@@ -1,4 +1,4 @@
-# FastAPI App with PostgreSQL and Docker
+# GoalForge FastAPI App with PostgreSQL and Docker
 
 ## Introduction
 
@@ -90,3 +90,44 @@ This project is managed by pyright, you should have the pylance extension instal
    ```bash
    poetry run pyright
    ```
+
+## Project Module Creator
+
+This script creates a basic module structure with Model, Repository, Routes, Schema, and Service files.
+
+### Usage
+
+1. Make sure you have Python installed on your system.
+
+2. Clone this repository or download the script `create_module.py`.
+
+3. Open a terminal window and navigate to the directory containing the `create_module.py` script.
+
+4. Run the script by executing the following command:
+
+    ```bash
+    python create_module.py
+    ```
+
+5. Follow the prompts and enter the name of the module when prompted.
+
+6. After execution, a new folder with the module name will be created in the `app` directory. Inside this folder, you will find the following files:
+    - `ModuleNameModel.py`: Contains the data model definitions.
+    - `ModuleNameRepository.py`: Provides access to data storage and retrieval methods.
+    - `ModuleNameRoutes.py`: Defines the API routes and endpoint handlers.
+    - `ModuleNameSchema.py`: Contains Pydantic schema definitions for data validation.
+    - `ModuleNameService.py`: Implements the business logic and interacts with the repository.
+
+7. You can modify these files to suit your specific project requirements.
+
+### Folder Structure
+
+project_root/
+│
+├── apps/
+│ ├── ModuleName/
+│ │ ├── ModuleNameModel.py
+│ │ ├── ModuleNameRepository.py
+│ │ ├── ModuleNameRoutes.py
+│ │ ├── ModuleNameSchema.py
+│ │ └── ModuleNameService.py
