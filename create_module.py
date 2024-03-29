@@ -1,24 +1,20 @@
 import os
 
 
-def create_project_files(project_name: str):
-    # Create main project folder
-    project_path = os.path.join("app", project_name)
-    os.makedirs(project_path)
+def create_module_files(module_name: str):
+    module_name_titlecase = module_name.title()
+    folder_path = os.path.join("apps", module_name)
+    os.makedirs(folder_path)
 
-    # Create files with project name prefix
-    files = [
-        f"{project_name}{suffix}.py"
-        for suffix in ["Model", "Repository", "Routes", "Schema", "Service"]
-    ]
-    for filename in files:
-        filepath = os.path.join(project_path, filename)
-        with open(filepath, "w") as f:
-            f.write("# Placeholder file")
-
-    print(f"Project files for '{project_name}' created successfully.")
+    files = ["Model", "Repository", "Routes", "Schema", "Service"]
+    for file_name in files:
+        file_path = os.path.join(folder_path, f"{module_name_titlecase}{file_name}.py")
+        with open(file_path, "w") as file:
+            file.write(f"# {module_name_titlecase}{file_name}.py\n")
+            file.write(f"class {module_name_titlecase}{file_name}:\n")
+            file.write(f"    pass\n")
 
 
 if __name__ == "__main__":
-    project_name = input("Enter project name: ")
-    create_project_files(project_name)
+    module_name = input("Enter the module name: ")
+    create_module_files(module_name)
