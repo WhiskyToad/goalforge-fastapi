@@ -19,3 +19,22 @@ class GoalsRepository:
         self.db.commit()
         self.db.refresh(goal)
         return goal
+
+    async def update_user_goal(
+        self, goal_id: int, user_id: int, goal_data: GoalCreate
+    ) -> GoalModel | None:
+        goal = (
+            self.db.query(GoalModel)
+            .filter(GoalModel.id == goal_id, GoalModel.owner == user_id)
+            .first()
+        )
+
+        if not goal:
+            return None
+
+        for field, value in goal_data.dict().items():
+            setattr(goal, field, value)
+        self.db.add(goal)
+        self.db.commit()
+        self.db.refresh(goal)
+        return goal

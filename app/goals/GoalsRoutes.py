@@ -18,3 +18,17 @@ async def create_user_goal(
     goals_service: GoalsService = Depends(GoalsService),
 ):
     return await goals_service.create_user_goal(user_id, goal_data)
+
+
+@GoalsRouter.patch(
+    "/edit/goal/{goal_id}",
+    status_code=status.HTTP_201_CREATED,
+    response_model=Goal,
+)
+async def edit_user_goal(
+    goal_id: int,
+    goal_data: GoalCreate,
+    user_id: int = Depends(get_user_id_from_token),
+    goals_service: GoalsService = Depends(GoalsService),
+):
+    return await goals_service.update_user_goal(goal_id, user_id, goal_data)
