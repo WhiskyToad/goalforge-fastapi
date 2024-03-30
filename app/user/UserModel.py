@@ -1,6 +1,7 @@
 from sqlalchemy import Integer, String
 from app.shared.models.BaseModel import EntityMeta
 from sqlalchemy.orm import relationship, mapped_column
+from app.goals.GoalsModel import *
 
 
 class UserModel(EntityMeta):

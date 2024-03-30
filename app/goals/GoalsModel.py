@@ -26,8 +26,7 @@ class GoalModel(EntityMeta):
 class GoalTask(EntityMeta):
     __tablename__ = "goal_tasks"
 
+    id = mapped_column(Integer, primary_key=True, index=True)
+
     goal_id = mapped_column(Integer, ForeignKey("goals.id"), primary_key=True)
     task_id = mapped_column(Integer, ForeignKey("tasks.id"), primary_key=True)
-
-    goal = relationship("GoalModel", back_populates="tasks")
-    task = relationship("Task", back_populates="goals")

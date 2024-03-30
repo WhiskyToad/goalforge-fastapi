@@ -20,7 +20,7 @@ class Task(EntityMeta):
     owner = relationship("UserModel", back_populates="tasks")
 
     task_instances = relationship("TaskInstance", back_populates="task")
-    goals = relationship("GoalModel", secondary="goal_tasks", back_populates="tasks")
+    goals = relationship("GoalModel", back_populates="tasks", secondary="goal_tasks")
 
 
 class TaskInstance(EntityMeta):

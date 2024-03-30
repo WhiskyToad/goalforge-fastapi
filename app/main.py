@@ -1,3 +1,4 @@
+from app.goals.GoalsRoutes import GoalsRouter
 from app.user.UserRoutes import UserRouter
 from app.task.TaskRoutes import TaskRouter
 from fastapi import FastAPI, Request
@@ -26,3 +27,4 @@ async def custom_exception_handler(request: Request, exc: RequestValidationError
 
 app.include_router(UserRouter)
 app.include_router(TaskRouter)
+app.include_router(GoalsRouter)
