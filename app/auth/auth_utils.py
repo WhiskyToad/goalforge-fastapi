@@ -1,13 +1,10 @@
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
+from app.jwt.JwtService import ALGORITHM, SECRET_KEY
 from app.shared.errors.CustomError import CustomError
-import os
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/user/login")
-
-SECRET_KEY = os.environ.get("JWT_SECRET", "")
-ALGORITHM = os.environ.get("JWT_ALGORITHM", "")
 
 
 async def get_user_id_from_token(token: str = Depends(oauth2_scheme)) -> int:

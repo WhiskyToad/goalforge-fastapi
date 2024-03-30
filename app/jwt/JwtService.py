@@ -3,6 +3,11 @@ from typing import Any, Dict, Optional
 from jose import jwt
 import os
 
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
 SECRET_KEY = os.environ.get("JWT_SECRET", "")
 ALGORITHM = os.environ.get("JWT_ALGORITHM", "")
 
