@@ -11,6 +11,7 @@ from alembic import context
 from app.shared.models.BaseModel import EntityMeta
 from app.user.UserModel import *
 from app.task.TaskModel import *
+from app.goals.GoalsModel import *
 from dotenv import load_dotenv
 import os
 

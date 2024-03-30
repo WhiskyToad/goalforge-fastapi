@@ -12,3 +12,4 @@ class UserModel(EntityMeta):
     hashed_password = mapped_column(String)
 
     tasks = relationship("Task", back_populates="owner")
+    goals = relationship("GoalModel", back_populates="owner")
