@@ -1,7 +1,7 @@
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from app.jwt.JwtService import ALGORITHM, SECRET_KEY
+from app.shared.config.env_variables import ALGORITHM, SECRET_KEY
 from app.shared.errors.CustomError import CustomError
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/user/login")

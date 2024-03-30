@@ -1,15 +1,8 @@
 from datetime import timedelta, datetime, timezone
 from typing import Any, Dict, Optional
 from jose import jwt
-import os
 
-from dotenv import load_dotenv
-
-
-load_dotenv()
-
-SECRET_KEY = os.environ.get("JWT_SECRET", "")
-ALGORITHM = os.environ.get("JWT_ALGORITHM", "")
+from app.shared.config.env_variables import ALGORITHM, SECRET_KEY
 
 
 class JwtService:
