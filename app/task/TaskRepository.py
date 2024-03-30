@@ -29,7 +29,9 @@ class TaskRepository:
         self.db.refresh(task_instance)
         return task_instance
 
-    def get_task_by_id_and_owner(self, task_id: int, owner_id: int):
+    async def get_task_by_id_and_owner(
+        self, task_id: int, owner_id: int
+    ) -> Task | None:
         return (
             self.db.query(Task)
             .filter(Task.id == task_id, Task.owner_id == owner_id)

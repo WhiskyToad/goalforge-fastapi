@@ -5,6 +5,8 @@ from app.goals.GoalsModel import GoalModel
 from app.goals.GoalsRepository import GoalsRepository
 from app.goals.GoalsSchema import Goal, GoalCreate
 from app.shared.errors.CustomError import CustomError
+from app.task.TaskRepository import TaskRepository
+from app.task.TaskService import TASK_NOT_FOUND
 
 
 GOAL_NOT_FOUND = "Goal not found"
@@ -21,10 +23,12 @@ async def map_goal_model_to_goal(goal_model: GoalModel) -> Goal:
 
 class GoalsService:
     goals_repository: GoalsRepository
+    task_repository: TaskRepository
 
     def __init__(
         self,
         goals_repository: GoalsRepository = Depends(GoalsRepository),
+        task_repository: TaskRepository = Depends(TaskRepository),
     ) -> None:
         self.goals_repository = goals_repository
 
@@ -64,3 +68,18 @@ class GoalsService:
                 message=GOAL_NOT_FOUND,
             )
         return await map_goal_model_to_goal(goal)
+
+    async def add_task_to_goal(self, goal_id: int, task_id: int, user_id: int) -> Goal:
+        task = await self.task_repository.get_task_by_id_and_owner(task_id, user_id)
+        goal = await self.goals_repository.get_goal_by_id_and_user_id(goal_id, user_id)
+        if not task:
+            raise CustomError(
+                status_code=status.HTTP_404_NOT_FOUND,
+                message=TASK_NOT_FOUND,
+            )
+        if not goal:
+            raise CustomError(
+                status_code=status.HTTP_404_NOT_FOUND,
+                message=GOAL_NOT_FOUND,
+            )
+        return await self.goals_repository.add_task_to_goal(task, goal)

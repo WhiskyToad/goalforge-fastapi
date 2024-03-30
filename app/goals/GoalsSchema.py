@@ -14,3 +14,8 @@ class Goal(BaseModel):
     description: Optional[str]
     is_completed: bool
     target_date: Optional[str]
+
+
+class GoalTaskUpdateSchema(BaseModel):
+    goal_id: int
+    task_id: int

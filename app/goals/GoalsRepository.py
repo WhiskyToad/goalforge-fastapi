@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.goals.GoalsModel import GoalModel
 from app.goals.GoalsSchema import GoalCreate
 from app.shared.config.Database import get_db_connection
+from app.task.TaskModel import Task
 
 
 class GoalsRepository:
@@ -63,6 +64,12 @@ class GoalsRepository:
         if not goal:
             return None
         goal.is_completed = False
+        self.db.commit()
+        self.db.refresh(goal)
+        return goal
+
+    async def add_task_to_goal(self, task: Task, goal: GoalModel) -> GoalModel:
+        goal.tasks.append(task)
         self.db.commit()
         self.db.refresh(goal)
         return goal
