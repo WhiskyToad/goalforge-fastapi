@@ -15,9 +15,7 @@ class GoalModel(EntityMeta):
     created_at = mapped_column(
         DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
-    target_date = mapped_column(
-        DateTime(timezone=True), default=datetime.now(timezone.utc)
-    )
+    target_date = mapped_column(String)
 
     user_id = mapped_column(Integer, ForeignKey("users.id"))
 
