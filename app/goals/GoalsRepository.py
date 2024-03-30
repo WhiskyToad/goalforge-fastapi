@@ -57,3 +57,12 @@ class GoalsRepository:
         self.db.commit()
         self.db.refresh(goal)
         return goal
+
+    async def uncomplete_goal(self, goal_id: int, user_id: int) -> GoalModel | None:
+        goal = await self.get_goal_by_id_and_user_id(goal_id, user_id)
+        if not goal:
+            return None
+        goal.is_completed = False
+        self.db.commit()
+        self.db.refresh(goal)
+        return goal

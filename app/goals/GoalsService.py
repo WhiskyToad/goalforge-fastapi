@@ -55,3 +55,12 @@ class GoalsService:
                 message=GOAL_NOT_FOUND,
             )
         return await map_goal_model_to_goal(goal)
+
+    async def uncomplete_user_goal(self, goal_id: int, user_id: int) -> Goal:
+        goal = await self.goals_repository.uncomplete_goal(goal_id, user_id)
+        if not goal:
+            raise CustomError(
+                status_code=status.HTTP_404_NOT_FOUND,
+                message=GOAL_NOT_FOUND,
+            )
+        return await map_goal_model_to_goal(goal)

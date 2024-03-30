@@ -17,7 +17,7 @@ async def get_all_user_goals(
 
 
 @GoalsRouter.post(
-    "/create/goal",
+    "/create",
     status_code=status.HTTP_201_CREATED,
     response_model=Goal,
 )
@@ -30,7 +30,7 @@ async def create_user_goal(
 
 
 @GoalsRouter.patch(
-    "/edit/goal/{goal_id}",
+    "/edit/{goal_id}",
     status_code=status.HTTP_202_ACCEPTED,
     response_model=Goal,
 )
@@ -55,7 +55,7 @@ async def delete_goal_by_id(
 
 
 @GoalsRouter.patch(
-    "/complete/goal/{goal_id}",
+    "/complete/{goal_id}",
     status_code=status.HTTP_200_OK,
     response_model=Goal,
 )
@@ -65,3 +65,16 @@ async def complete_user_goal(
     goals_service: GoalsService = Depends(GoalsService),
 ):
     return await goals_service.complete_user_goal(goal_id, user_id)
+
+
+@GoalsRouter.patch(
+    "/uncomplete/{goal_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=Goal,
+)
+async def uncomplete_user_goal(
+    goal_id: int,
+    user_id: int = Depends(get_user_id_from_token),
+    goals_service: GoalsService = Depends(GoalsService),
+):
+    return await goals_service.uncomplete_user_goal(goal_id, user_id)
