@@ -17,6 +17,5 @@ async def get_user_id_from_token(token: str = Depends(oauth2_scheme)) -> int:
         if user_id is None:
             raise CustomError(status_code=401, message="No user found")
     except JWTError:
-        print(JWTError)
         raise CustomError(status_code=400, message="JWT Error")
     return int(user_id)

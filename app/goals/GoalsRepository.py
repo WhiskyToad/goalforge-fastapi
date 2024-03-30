@@ -13,7 +13,8 @@ class GoalsRepository:
         self.db = db
 
     async def create_user_goal(self, goal_data: GoalCreate, user_id: int) -> GoalModel:
-        goal = GoalModel(**goal_data, user_id=user_id)
+        goal_data_dict = goal_data.dict()
+        goal = GoalModel(**goal_data_dict, user_id=user_id)
         self.db.add(goal)
         self.db.commit()
         self.db.refresh(goal)
