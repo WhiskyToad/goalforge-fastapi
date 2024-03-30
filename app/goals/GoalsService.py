@@ -1,11 +1,22 @@
+from typing import List
 from fastapi import Depends, status
 
+from app.goals.GoalsModel import GoalModel
 from app.goals.GoalsRepository import GoalsRepository
 from app.goals.GoalsSchema import Goal, GoalCreate
 from app.shared.errors.CustomError import CustomError
 
 
 GOAL_NOT_FOUND = "Goal not found"
+
+
+async def map_goal_model_to_goal(goal_model: GoalModel) -> Goal:
+    return Goal(
+        title=goal_model.title,
+        description=goal_model.description,
+        is_completed=goal_model.is_completed,
+        target_date=goal_model.target_date,
+    )
 
 
 class GoalsService:
@@ -17,14 +28,13 @@ class GoalsService:
     ) -> None:
         self.goals_repository = goals_repository
 
+    async def get_all_user_goals(self, user_id: int) -> List[Goal]:
+        goals = await self.goals_repository.get_all_tasks_by_user_id(user_id)
+        return [await map_goal_model_to_goal(goal) for goal in goals]
+
     async def create_user_goal(self, user_id: int, goal_data: GoalCreate) -> Goal:
         goal = await self.goals_repository.create_user_goal(goal_data, user_id)
-        return Goal(
-            title=goal.title,
-            description=goal.description,
-            is_completed=False,
-            target_date=goal.target_date,
-        )
+        return await map_goal_model_to_goal(goal)
 
     async def update_user_goal(
         self, goal_id: int, user_id: int, goal_data: GoalCreate
@@ -35,9 +45,4 @@ class GoalsService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 message=GOAL_NOT_FOUND,
             )
-        return Goal(
-            title=goal.title,
-            description=goal.description,
-            is_completed=goal.is_completed,
-            target_date=goal.target_date,
-        )
+        return await map_goal_model_to_goal(goal)

@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
@@ -11,6 +12,10 @@ class GoalsRepository:
 
     def __init__(self, db: Session = Depends(get_db_connection)) -> None:
         self.db = db
+
+    async def get_all_tasks_by_user_id(self, user_id: int) -> List[GoalModel]:
+        goals = self.db.query(GoalModel).filter(GoalModel.owner == user_id).all()
+        return goals
 
     async def create_user_goal(self, goal_data: GoalCreate, user_id: int) -> GoalModel:
         goal_data_dict = goal_data.dict()
