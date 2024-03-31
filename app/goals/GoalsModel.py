@@ -15,7 +15,7 @@ class GoalModel(EntityMeta):
     created_at = mapped_column(
         DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
-    target_date = mapped_column(DateTime(timezone=True))
+    target_date = mapped_column(DateTime(timezone=True), default=None)
 
     user_id = mapped_column(Integer, ForeignKey("users.id"))
 
@@ -26,7 +26,7 @@ class GoalModel(EntityMeta):
 class GoalTask(EntityMeta):
     __tablename__ = "goal_tasks"
 
-    id = mapped_column(Integer, primary_key=True, index=True)
+    id = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
 
     goal_id = mapped_column(Integer, ForeignKey("goals.id"), primary_key=True)
     task_id = mapped_column(Integer, ForeignKey("tasks.id"), primary_key=True)

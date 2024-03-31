@@ -32,6 +32,7 @@ class GoalsService:
         task_repository: TaskRepository = Depends(TaskRepository),
     ) -> None:
         self.goals_repository = goals_repository
+        self.task_repository = task_repository
 
     async def get_all_user_goals(self, user_id: int) -> List[Goal]:
         goals = await self.goals_repository.get_all_tasks_by_user_id(user_id)
@@ -83,4 +84,5 @@ class GoalsService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 message=GOAL_NOT_FOUND,
             )
-        return await self.goals_repository.add_task_to_goal(task, goal)
+        appended_goal = await self.goals_repository.add_task_to_goal(task, goal)
+        return await map_goal_model_to_goal(appended_goal)

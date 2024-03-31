@@ -1,8 +1,8 @@
-"""added goals
+"""Initial migration
 
-Revision ID: 388e48d0e78a
+Revision ID: 73875a8e320a
 Revises: 
-Create Date: 2024-03-30 11:54:13.019367
+Create Date: 2024-03-31 09:08:27.840666
 
 """
 from typing import Sequence, Union
@@ -13,7 +13,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision: str = '388e48d0e78a'
+revision: str = '73875a8e320a'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -37,7 +37,7 @@ def upgrade() -> None:
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('is_completed', sa.Boolean(), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
-    sa.Column('target_date', sa.String(), nullable=True),
+    sa.Column('target_date', sa.DateTime(timezone=True), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -58,7 +58,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_tasks_id'), 'tasks', ['id'], unique=False)
     op.create_index(op.f('ix_tasks_title'), 'tasks', ['title'], unique=False)
     op.create_table('goal_tasks',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('goal_id', sa.Integer(), nullable=False),
     sa.Column('task_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['goal_id'], ['goals.id'], ),

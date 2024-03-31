@@ -46,7 +46,7 @@ class TaskService:
         task_input: CreateTaskInstanceInput,
         user_id: int,
     ) -> TaskInstanceSchema:
-        task = self.task_repository.get_task_by_id_and_owner(
+        task = await self.task_repository.get_task_by_id_and_owner(
             task_input.task_id, user_id
         )
         if task is None:
@@ -130,6 +130,7 @@ class TaskService:
     def map_task_task_instances(
         self, task: Task, task_instance: TaskInstance
     ) -> TaskInstanceSchema:
+        due_date_str = task_instance.due_date.isoformat()
         return TaskInstanceSchema(
             task_id=task.id,
             title=task.title,
@@ -137,7 +138,7 @@ class TaskService:
             id=task_instance.id,
             completed=task_instance.completed,
             completed_at=task_instance.completed_at,
-            due_date=task_instance.due_date,
+            due_date=due_date_str,
             status=task_instance.status,
         )
 
