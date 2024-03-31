@@ -6,6 +6,7 @@ from app.goals.GoalsModel import GoalModel
 from app.goals.GoalsSchema import GoalCreate
 from app.shared.config.Database import get_db_connection
 from app.task.TaskModel import Task
+from app.user.UserModel import UserModel
 
 
 class GoalsRepository:
@@ -15,7 +16,12 @@ class GoalsRepository:
         self.db = db
 
     async def get_all_tasks_by_user_id(self, user_id: int) -> List[GoalModel]:
-        goals = self.db.query(GoalModel).filter(GoalModel.owner == user_id).all()
+        goals = (
+            self.db.query(GoalModel)
+            .join(UserModel)
+            .filter(UserModel.id == user_id)
+            .all()
+        )
         return goals
 
     async def get_goal_by_id_and_user_id(
@@ -23,7 +29,8 @@ class GoalsRepository:
     ) -> GoalModel | None:
         goal = (
             self.db.query(GoalModel)
-            .filter(GoalModel.owner == user_id, GoalModel.id == goal_id)
+            .join(UserModel)
+            .filter(UserModel.id == user_id, GoalModel.id == goal_id)
             .first()
         )
 
