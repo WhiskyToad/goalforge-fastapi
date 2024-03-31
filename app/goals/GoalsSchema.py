@@ -5,11 +5,11 @@ from typing import Optional
 class GoalCreate(BaseModel):
     title: str
     description: Optional[str] = None
-    is_completed: bool = False
     target_date: Optional[str]
 
 
 class Goal(BaseModel):
+    id: int
     title: str
     description: Optional[str]
     is_completed: bool

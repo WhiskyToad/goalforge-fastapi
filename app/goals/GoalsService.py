@@ -14,6 +14,7 @@ GOAL_NOT_FOUND = "Goal not found"
 
 async def map_goal_model_to_goal(goal_model: GoalModel) -> Goal:
     return Goal(
+        id=goal_model.id,
         title=goal_model.title,
         description=goal_model.description,
         is_completed=goal_model.is_completed,
