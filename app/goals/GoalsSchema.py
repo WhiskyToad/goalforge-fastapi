@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import List, Optional
 
 
 class GoalCreate(BaseModel):
@@ -14,6 +14,7 @@ class Goal(BaseModel):
     description: Optional[str]
     is_completed: bool
     target_date: Optional[str]
+    task_ids: List[str]
 
 
 class GoalTaskUpdateSchema(BaseModel):

@@ -19,6 +19,7 @@ async def map_goal_model_to_goal(goal_model: GoalModel) -> Goal:
         description=goal_model.description,
         is_completed=goal_model.is_completed,
         target_date=goal_model.target_date,
+        task_ids=[task.id for task in goal_model.tasks],
     )
 
 
