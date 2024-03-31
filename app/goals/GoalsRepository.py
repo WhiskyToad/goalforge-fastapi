@@ -2,7 +2,7 @@ from typing import List
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from app.goals.GoalsModel import GoalModel
+from app.goals.GoalsModel import GoalModel, GoalTask
 from app.goals.GoalsSchema import GoalCreate
 from app.shared.config.Database import get_db_connection
 from app.task.TaskModel import Task
@@ -80,3 +80,44 @@ class GoalsRepository:
         self.db.commit()
         self.db.refresh(goal)
         return goal
+
+    async def remove_task_from_goal(
+        self, task_id: int, goal_id: int, user_id: int
+    ) -> GoalModel | None:
+        # Find the goal_task record associated with the task and goal
+        goal_task = (
+            self.db.query(GoalTask)
+            .filter(
+                GoalTask.goal_id == goal_id,
+                GoalTask.task_id == task_id,
+            )
+            .first()
+        )
+
+        # Check if the goal_task exists
+        if not goal_task:
+            return None  # The task is not associated with the goal
+
+        try:
+            # Remove the task from the goal's list of tasks
+            goal = (
+                self.db.query(GoalModel)
+                .filter(GoalModel.id == goal_id, GoalModel.user_id == user_id)
+                .first()
+            )
+
+            if goal:
+                task_to_remove = self.db.query(Task).filter(Task.id == task_id).first()
+                if task_to_remove:
+                    goal.tasks.remove(task_to_remove)
+
+            # Delete the goal_task record from the database
+            self.db.delete(goal_task)
+            self.db.commit()
+            self.db.refresh(goal)
+            return goal
+        except Exception as e:
+            # Handle any exceptions, such as database errors
+            print(f"Error removing task from goal: {e}")
+            self.db.rollback()
+            return None

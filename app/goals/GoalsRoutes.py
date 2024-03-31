@@ -91,3 +91,18 @@ async def add_task_to_goal(
     goals_service: GoalsService = Depends(GoalsService),
 ):
     return await goals_service.add_task_to_goal(input.goal_id, input.task_id, user_id)
+
+
+@GoalsRouter.patch(
+    "/remove-task",
+    status_code=status.HTTP_200_OK,
+    response_model=Goal,
+)
+async def remove_task_from_goal(
+    input: GoalTaskUpdateSchema,
+    user_id: int = Depends(get_user_id_from_token),
+    goals_service: GoalsService = Depends(GoalsService),
+):
+    return await goals_service.remove_task_from_goal(
+        input.goal_id, input.task_id, user_id
+    )

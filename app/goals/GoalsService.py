@@ -87,3 +87,16 @@ class GoalsService:
             )
         appended_goal = await self.goals_repository.add_task_to_goal(task, goal)
         return await map_goal_model_to_goal(appended_goal)
+
+    async def remove_task_from_goal(
+        self, goal_id: int, task_id: int, user_id: int
+    ) -> Goal:
+        updated_goal = await self.goals_repository.remove_task_from_goal(
+            task_id, goal_id, user_id
+        )
+        if not updated_goal:
+            raise CustomError(
+                status_code=status.HTTP_404_NOT_FOUND,
+                message=GOAL_NOT_FOUND,
+            )
+        return await map_goal_model_to_goal(updated_goal)
