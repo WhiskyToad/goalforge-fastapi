@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.shared.config.Database import get_db_connection
 from app.task.TaskSchema import EditTaskInput
 from app.task.TaskModel import Task, TaskInstance
-from typing import Optional
+from typing import List, Optional
 from sqlalchemy import func
 from datetime import date
 
@@ -130,3 +130,13 @@ class TaskRepository:
             .all()
         )
         return tasks_with_counts
+
+    async def get_tasks_by_ids_and_user_id(
+        self, task_ids: List[int], user_id: int
+    ) -> List[Task]:
+        tasks = (
+            self.db.query(Task)
+            .filter(Task.id.in_(task_ids), Task.owner_id == user_id)
+            .all()
+        )
+        return tasks

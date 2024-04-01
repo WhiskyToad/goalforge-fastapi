@@ -109,7 +109,7 @@ async def delete_task_instance(
 
 
 @TaskRouter.get(
-    "/tasks/list",
+    "/all-tasks",
     status_code=status.HTTP_200_OK,
     response_model=List[TaskItem],
 )
@@ -117,4 +117,17 @@ async def get_task_list(
     task_service: TaskService = Depends(TaskService),
     user_id: int = Depends(get_user_id_from_token),
 ):
-    return task_service.get_task_list(user_id)
+    return await task_service.get_task_list(user_id)
+
+
+@TaskRouter.get(
+    "/tasks-by-ids",
+    status_code=status.HTTP_200_OK,
+    response_model=List[TaskItem],
+)
+async def get_tasks_by_ids(
+    task_ids: List[int],
+    task_service: TaskService = Depends(TaskService),
+    user_id: int = Depends(get_user_id_from_token),
+):
+    return await task_service.get_tasks_by_ids(task_ids, user_id)

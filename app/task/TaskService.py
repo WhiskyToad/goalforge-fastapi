@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import Depends, status
 from app.task.TaskRepository import TaskRepository
 from app.task.TaskSchema import (
@@ -154,3 +155,22 @@ class TaskService:
         ]
 
         return task_items
+
+    async def get_tasks_by_ids(
+        self, task_ids: List[int], user_id: int
+    ) -> List[TaskSchema]:
+        tasks_list = await self.task_repository.get_tasks_by_ids_and_user_id(
+            task_ids, user_id
+        )
+        return [
+            TaskSchema(
+                id=task.id,
+                title=task.title,
+                description=task.description,
+                recurring=task.recurring,
+                recurring_interval=task.recurring_interval,
+                created_at=task.created_at,
+                owner_id=task.owner_id,
+            )
+            for task in tasks_list
+        ]
