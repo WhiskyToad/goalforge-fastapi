@@ -10,6 +10,7 @@ class GoalModel(EntityMeta):
 
     id = mapped_column(Integer, primary_key=True, index=True)
     title = mapped_column(String, index=True)
+    icon = mapped_column(String, index=True)
     description = mapped_column(String)
     is_completed = mapped_column(Boolean, default=False)
     created_at = mapped_column(

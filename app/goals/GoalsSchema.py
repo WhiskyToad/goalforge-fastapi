@@ -6,6 +6,7 @@ class GoalCreate(BaseModel):
     title: str
     description: Optional[str] = None
     target_date: Optional[str]
+    icon: str
 
 
 class Goal(BaseModel):
@@ -15,6 +16,7 @@ class Goal(BaseModel):
     is_completed: bool
     target_date: Optional[str]
     task_ids: List[str]
+    icon: str
 
 
 class GoalTaskUpdateSchema(BaseModel):
