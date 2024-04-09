@@ -101,3 +101,10 @@ class GoalsService:
                 message=GOAL_NOT_FOUND,
             )
         return await map_goal_model_to_goal(updated_goal)
+
+    async def get_goal_by_id(self, goal_id: int, user_id: int) -> Goal:
+        goal_model = await self.goals_repository.get_goal_by_id_and_user_id(
+            goal_id, user_id
+        )
+
+        return await map_goal_model_to_goal(goal_model)

@@ -8,6 +8,15 @@ from app.goals.GoalsService import GoalsService
 GoalsRouter = APIRouter(prefix="/api/goals", tags=["goals"])
 
 
+@GoalsRouter.get("/get/{goal_id}", status_code=status.HTTP_200_OK, response_model=Goal)
+async def get_goal_by_id(
+    goal_id: int,
+    user_id: int = Depends(get_user_id_from_token),
+    goals_service: GoalsService = Depends(GoalsService),
+):
+    return await goals_service.get_goal_by_id(goal_id, user_id)
+
+
 @GoalsRouter.get("/get/all", status_code=status.HTTP_200_OK, response_model=List[Goal])
 async def get_all_user_goals(
     user_id: int = Depends(get_user_id_from_token),
