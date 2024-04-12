@@ -14,11 +14,11 @@ from datetime import date
 from typing import List
 
 
-TaskRouter = APIRouter(prefix="/api/task", tags=["task"])
+TaskRouter = APIRouter(prefix="/api/tasks", tags=["tasks"])
 
 
 @TaskRouter.post(
-    "/create/task",
+    "/",
     status_code=status.HTTP_201_CREATED,
     response_model=TaskInstanceSchema,
 )
@@ -31,7 +31,7 @@ async def create_task(
 
 
 @TaskRouter.post(
-    "/create/task_instance",
+    "/instances",
     status_code=status.HTTP_201_CREATED,
     response_model=TaskInstanceSchema,
 )
@@ -44,7 +44,7 @@ async def create_task_instance(
 
 
 @TaskRouter.get(
-    "/tasks/{due_date}",
+    "/",
     status_code=status.HTTP_200_OK,
     response_model=List[TaskInstanceSchema],
 )
@@ -57,7 +57,7 @@ async def get_tasks_by_due_date(
 
 
 @TaskRouter.patch(
-    "/complete/{task_instance_id}",
+    "/{task_instance_id}/complete",
     status_code=status.HTTP_200_OK,
     response_model=TaskInstanceSchema,
 )
@@ -70,7 +70,7 @@ async def complete_task_instance(
 
 
 @TaskRouter.patch(
-    "/uncomplete/{task_instance_id}",
+    "/{task_instance_id}/uncomplete",
     status_code=status.HTTP_200_OK,
     response_model=TaskInstanceSchema,
 )
@@ -83,20 +83,21 @@ async def uncomplete_task_instance(
 
 
 @TaskRouter.patch(
-    "/edit/{task__id}",
+    "/{task_id}",
     status_code=status.HTTP_200_OK,
     response_model=TaskSchema,
 )
 async def edit_task(
+    task_id: int,
     task_input: EditTaskInput,
     task_service: TaskService = Depends(TaskService),
     user_id: int = Depends(get_user_id_from_token),
 ):
-    return await task_service.edit_task(task_input, user_id)
+    return await task_service.edit_task(task_id, task_input, user_id)
 
 
 @TaskRouter.delete(
-    "/delete/instance/{instance_id}",
+    "/instances/{instance_id}",
     status_code=status.HTTP_200_OK,
     response_model=SuccessMessage,
 )
@@ -109,7 +110,7 @@ async def delete_task_instance(
 
 
 @TaskRouter.get(
-    "/all-tasks",
+    "/",
     status_code=status.HTTP_200_OK,
     response_model=List[TaskItem],
 )
@@ -121,7 +122,7 @@ async def get_task_list(
 
 
 @TaskRouter.get(
-    "/tasks-by-ids",
+    "/by-ids",
     status_code=status.HTTP_200_OK,
     response_model=List[TaskItem],
 )

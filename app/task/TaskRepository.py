@@ -92,10 +92,10 @@ class TaskRepository:
         self.db.refresh(task_instance)
         return task_instance
 
-    async def edit_task(self, task_input: EditTaskInput, user_id: int):
+    async def edit_task(self, task_id: int, task_input: EditTaskInput, user_id: int):
         task = (
             self.db.query(Task)
-            .filter(Task.id == task_input.task_id, Task.owner_id == user_id)
+            .filter(Task.id == task_id, Task.owner_id == user_id)
             .first()
         )
         if task is None:

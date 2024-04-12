@@ -111,8 +111,8 @@ class TaskService:
             status=task_instance.status,
         )
 
-    async def edit_task(self, task_input: EditTaskInput, user_id: int):
-        task = await self.task_repository.edit_task(task_input, user_id)
+    async def edit_task(self, task_id: int, task_input: EditTaskInput, user_id: int):
+        task = await self.task_repository.edit_task(task_id, task_input, user_id)
         if task is None:
             raise CustomError(
                 status_code=status.HTTP_404_NOT_FOUND,

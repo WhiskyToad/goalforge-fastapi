@@ -17,7 +17,7 @@ class TaskSchema(TaskBase):
 
 
 class EditTaskInput(TaskBase):
-    task_id: int
+    pass
 
 
 class CreateTaskInput(TaskBase):
