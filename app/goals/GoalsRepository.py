@@ -3,7 +3,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.goals.GoalsModel import GoalModel, GoalTask
-from app.goals.GoalsSchema import GoalCreate
+from app.goals.GoalsSchema import GoalCreateInput
 from app.shared.config.Database import get_db_connection
 from app.task.TaskModel import Task
 from app.user.UserModel import UserModel
@@ -36,7 +36,9 @@ class GoalsRepository:
 
         return goal
 
-    async def create_user_goal(self, goal_data: GoalCreate, user_id: int) -> GoalModel:
+    async def create_user_goal(
+        self, goal_data: GoalCreateInput, user_id: int
+    ) -> GoalModel:
         goal_data_dict = goal_data.dict()
         goal = GoalModel(**goal_data_dict, user_id=user_id)
         self.db.add(goal)
@@ -45,7 +47,7 @@ class GoalsRepository:
         return goal
 
     async def update_user_goal(
-        self, goal_id: int, user_id: int, goal_data: GoalCreate
+        self, goal_id: int, user_id: int, goal_data: GoalCreateInput
     ) -> GoalModel | None:
         goal = await self.get_goal_by_id_and_user_id(goal_id, user_id)
         if not goal:

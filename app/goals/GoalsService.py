@@ -3,7 +3,7 @@ from fastapi import Depends, status
 
 from app.goals.GoalsModel import GoalModel
 from app.goals.GoalsRepository import GoalsRepository
-from app.goals.GoalsSchema import Goal, GoalCreate
+from app.goals.GoalsSchema import Goal, GoalCreateInput
 from app.shared.errors.CustomError import CustomError
 from app.task.TaskRepository import TaskRepository
 from app.task.TaskService import TASK_NOT_FOUND
@@ -40,12 +40,12 @@ class GoalsService:
         goals = await self.goals_repository.get_all_tasks_by_user_id(user_id)
         return [await map_goal_model_to_goal(goal) for goal in goals]
 
-    async def create_user_goal(self, user_id: int, goal_data: GoalCreate) -> Goal:
+    async def create_user_goal(self, user_id: int, goal_data: GoalCreateInput) -> Goal:
         goal = await self.goals_repository.create_user_goal(goal_data, user_id)
         return await map_goal_model_to_goal(goal)
 
     async def update_user_goal(
-        self, goal_id: int, user_id: int, goal_data: GoalCreate
+        self, goal_id: int, user_id: int, goal_data: GoalCreateInput
     ) -> Goal:
         goal = await self.goals_repository.update_user_goal(goal_id, user_id, goal_data)
         if not goal:

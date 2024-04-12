@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 
-class GoalCreate(BaseModel):
+class GoalCreateInput(BaseModel):
     title: str
     description: Optional[str] = None
     target_date: Optional[str]
@@ -19,6 +19,5 @@ class Goal(BaseModel):
     icon: str
 
 
-class GoalTaskUpdateSchema(BaseModel):
-    goal_id: int
+class GoalTaskUpdateInput(BaseModel):
     task_id: int
