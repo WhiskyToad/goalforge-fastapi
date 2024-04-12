@@ -11,7 +11,7 @@ from app.auth.auth_utils import get_user_id_from_token
 UserRouter = APIRouter(prefix="/api/user", tags=["user"])
 
 
-@UserRouter.post("/signup", response_model=Token, status_code=201)
+@UserRouter.post("/", response_model=Token, status_code=201)
 async def signup(
     user_details: UserSignup, user_service: UserService = Depends(UserService)
 ):
@@ -35,7 +35,7 @@ async def read_users_me(
     return user_service.get_current_user(user_id)
 
 
-@UserRouter.patch("/edit/profile", response_model=User)
+@UserRouter.put("/me", response_model=User)
 async def edit_user_profile(
     updated_details: UserEditProfile,
     user_id: int = Depends(get_user_id_from_token),
@@ -44,7 +44,7 @@ async def edit_user_profile(
     return await user_service.edit_user_profile(updated_details, user_id)
 
 
-@UserRouter.patch("/edit/password", response_model=dict)
+@UserRouter.put("/me/password", response_model=dict)
 async def change_user_password(
     password_details: UserChangePassword,
     user_id: int = Depends(get_user_id_from_token),
