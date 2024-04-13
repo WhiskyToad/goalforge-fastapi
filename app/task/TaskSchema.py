@@ -8,6 +8,7 @@ class TaskBase(BaseModel):
     description: str
     recurring: bool
     recurring_interval: Optional[str] = None
+    is_habit: bool
 
 
 class TaskSchema(TaskBase):

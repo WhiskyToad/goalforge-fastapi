@@ -35,6 +35,7 @@ class TaskService:
             description=task_input.description,
             recurring=task_input.recurring,
             owner_id=user_id,
+            is_habit=task_input.is_habit,
         )
         task_in_db = await self.task_repository.create_task(task)
         task_instance = await self.task_repository.create_task_instance(
@@ -126,6 +127,7 @@ class TaskService:
             recurring_interval=task.recurring_interval,
             created_at=task.created_at,
             owner_id=task.owner_id,
+            is_habit=task.is_habit,
         )
 
     def map_task_task_instances(
@@ -171,6 +173,7 @@ class TaskService:
                 recurring_interval=task.recurring_interval,
                 created_at=task.created_at,
                 owner_id=task.owner_id,
+                is_habit=task.is_habit,
             )
             for task in tasks_list
         ]

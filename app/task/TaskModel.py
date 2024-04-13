@@ -15,6 +15,7 @@ class Task(EntityMeta):
     created_at = mapped_column(
         DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
+    is_habit = mapped_column(Boolean, default=False)
 
     owner_id = mapped_column(Integer, ForeignKey("users.id"))
     owner = relationship("UserModel", back_populates="tasks")
