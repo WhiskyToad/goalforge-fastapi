@@ -1,4 +1,4 @@
-from fastapi import Depends, APIRouter, status
+from fastapi import Depends, APIRouter, Query, status
 from app.auth.auth_utils import get_user_id_from_token
 from app.task.TaskSchema import (
     CreateTaskInput,
@@ -127,7 +127,7 @@ async def get_task_list(
     response_model=List[TaskItem],
 )
 async def get_tasks_by_ids(
-    task_ids: List[int],
+    task_ids: List[int] = Query(..., description="List of task IDs to fetch"),
     task_service: TaskService = Depends(TaskService),
     user_id: int = Depends(get_user_id_from_token),
 ):

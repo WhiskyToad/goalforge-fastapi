@@ -125,7 +125,7 @@ class TaskService:
             description=task.description,
             recurring=task.recurring,
             recurring_interval=task.recurring_interval,
-            created_at=task.created_at,
+            created_at=task.created_at.isoformat(),
             owner_id=task.owner_id,
             is_habit=task.is_habit,
         )
@@ -171,7 +171,7 @@ class TaskService:
                 description=task.description,
                 recurring=task.recurring,
                 recurring_interval=task.recurring_interval,
-                created_at=task.created_at,
+                created_at=task.created_at.isoformat(),
                 owner_id=task.owner_id,
                 is_habit=task.is_habit,
             )
