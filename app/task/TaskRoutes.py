@@ -127,8 +127,10 @@ async def get_task_list(
     response_model=List[TaskSchema],
 )
 async def get_tasks_by_ids(
-    task_ids: List[int] = Query(..., description="List of task IDs to fetch"),
+    task_ids: str = Query(..., description="List of task IDs to fetch"),
     task_service: TaskService = Depends(TaskService),
     user_id: int = Depends(get_user_id_from_token),
 ):
-    return await task_service.get_tasks_by_ids(task_ids, user_id)
+    task_ids_list = task_ids.split(",")
+    task_ids_int = [int(task_id) for task_id in task_ids_list]
+    return await task_service.get_tasks_by_ids(task_ids_int, user_id)

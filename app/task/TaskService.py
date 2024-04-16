@@ -35,6 +35,7 @@ class TaskService:
             recurring=task_input.recurring,
             owner_id=user_id,
             is_habit=task_input.is_habit,
+            icon=task_input.icon,
         )
         task_in_db = await self.task_repository.create_task(task)
         task_instance = await self.task_repository.create_task_instance(
