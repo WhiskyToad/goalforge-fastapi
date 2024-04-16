@@ -6,7 +6,6 @@ from app.task.TaskSchema import (
     TaskInstanceSchema,
     CreateTaskInstanceInput,
     EditTaskInput,
-    TaskItem,
     TaskSchema,
 )
 from app.task.TaskModel import Task, TaskInstance
@@ -126,7 +125,6 @@ class TaskService:
             recurring=task.recurring,
             recurring_interval=task.recurring_interval,
             created_at=task.created_at.isoformat(),
-            owner_id=task.owner_id,
             is_habit=task.is_habit,
         )
 
@@ -152,8 +150,16 @@ class TaskService:
         tasks_with_counts = await self.task_repository.get_task_list(user_id)
 
         task_items = [
-            TaskItem(title=task.title, completed_instances=count)
-            for task, count in tasks_with_counts
+            TaskSchema(
+                id=task.id,
+                title=task.title,
+                description=task.description,
+                recurring=task.recurring,
+                recurring_interval=task.recurring_interval,
+                created_at=task.created_at.isoformat(),
+                is_habit=task.is_habit,
+            )
+            for task in tasks_with_counts
         ]
 
         return task_items
@@ -172,7 +178,6 @@ class TaskService:
                 recurring=task.recurring,
                 recurring_interval=task.recurring_interval,
                 created_at=task.created_at.isoformat(),
-                owner_id=task.owner_id,
                 is_habit=task.is_habit,
             )
             for task in tasks_list

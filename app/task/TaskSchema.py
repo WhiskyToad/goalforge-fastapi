@@ -14,7 +14,7 @@ class TaskBase(BaseModel):
 class TaskSchema(TaskBase):
     id: int
     created_at: str
-    owner_id: int
+    # completed_instances: int
 
 
 class EditTaskInput(TaskBase):
@@ -39,8 +39,3 @@ class TaskInstanceSchema(BaseModel):
     completed_at: Optional[str]
     due_date: Optional[str]
     status: str
-
-
-class TaskItem(BaseModel):
-    title: str
-    completed_instances: int

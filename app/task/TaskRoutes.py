@@ -5,7 +5,6 @@ from app.task.TaskSchema import (
     TaskInstanceSchema,
     CreateTaskInstanceInput,
     EditTaskInput,
-    TaskItem,
     TaskSchema,
 )
 from app.shared.schemas.GenericSchema import SuccessMessage
@@ -112,7 +111,7 @@ async def delete_task_instance(
 @TaskRouter.get(
     "/",
     status_code=status.HTTP_200_OK,
-    response_model=List[TaskItem],
+    response_model=List[TaskSchema],
 )
 async def get_task_list(
     task_service: TaskService = Depends(TaskService),
@@ -124,7 +123,7 @@ async def get_task_list(
 @TaskRouter.get(
     "/by-ids",
     status_code=status.HTTP_200_OK,
-    response_model=List[TaskItem],
+    response_model=List[TaskSchema],
 )
 async def get_tasks_by_ids(
     task_ids: List[int] = Query(..., description="List of task IDs to fetch"),
