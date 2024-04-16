@@ -9,6 +9,7 @@ class Task(EntityMeta):
 
     id = mapped_column(Integer, primary_key=True, index=True)
     title = mapped_column(String, index=True)
+    icon = mapped_column(String, index=True, default="")
     description = mapped_column(String)
     recurring = mapped_column(Boolean, default=False)
     recurring_interval = mapped_column(String, nullable=True)

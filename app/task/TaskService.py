@@ -126,6 +126,7 @@ class TaskService:
             recurring_interval=task.recurring_interval,
             created_at=task.created_at.isoformat(),
             is_habit=task.is_habit,
+            icon=task.icon,
         )
 
     def map_task_task_instances(
@@ -158,6 +159,7 @@ class TaskService:
                 recurring_interval=task.recurring_interval,
                 created_at=task.created_at.isoformat(),
                 is_habit=task.is_habit,
+                icon=task.icon,
             )
             for task in tasks_with_counts
         ]
@@ -179,6 +181,7 @@ class TaskService:
                 recurring_interval=task.recurring_interval,
                 created_at=task.created_at.isoformat(),
                 is_habit=task.is_habit,
+                icon=task.icon,
             )
             for task in tasks_list
         ]
