@@ -15,6 +15,19 @@ from datetime import date, datetime
 TASK_NOT_FOUND = "Task not found"
 
 
+def map_task_to_schema(task: Task) -> TaskSchema:
+    return TaskSchema(
+        id=task.id,
+        title=task.title,
+        description=task.description,
+        recurring=task.recurring,
+        recurring_interval=task.recurring_interval,
+        created_at=task.created_at.isoformat(),
+        is_habit=task.is_habit,
+        icon=task.icon,
+    )
+
+
 class TaskService:
     task_repository: TaskRepository
 
@@ -23,6 +36,10 @@ class TaskService:
         task_repository: TaskRepository = Depends(TaskRepository),
     ) -> None:
         self.task_repository = task_repository
+
+    async def get_task_by_id(self, task_id: int, user_id: int) -> TaskSchema:
+        task = await self.task_repository.get_task_by_id_and_owner(task_id, user_id)
+        return map_task_to_schema(task)
 
     async def create_task(
         self,
@@ -119,16 +136,7 @@ class TaskService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 message=TASK_NOT_FOUND,
             )
-        return TaskSchema(
-            id=task.id,
-            title=task.title,
-            description=task.description,
-            recurring=task.recurring,
-            recurring_interval=task.recurring_interval,
-            created_at=task.created_at.isoformat(),
-            is_habit=task.is_habit,
-            icon=task.icon,
-        )
+        return map_task_to_schema(task)
 
     def map_task_task_instances(
         self, task: Task, task_instance: TaskInstance
@@ -173,16 +181,4 @@ class TaskService:
         tasks_list = await self.task_repository.get_tasks_by_ids_and_user_id(
             task_ids, user_id
         )
-        return [
-            TaskSchema(
-                id=task.id,
-                title=task.title,
-                description=task.description,
-                recurring=task.recurring,
-                recurring_interval=task.recurring_interval,
-                created_at=task.created_at.isoformat(),
-                is_habit=task.is_habit,
-                icon=task.icon,
-            )
-            for task in tasks_list
-        ]
+        return [map_task_to_schema(task) for task in tasks_list]

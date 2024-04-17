@@ -16,6 +16,19 @@ from typing import List
 TaskRouter = APIRouter(prefix="/api/tasks", tags=["tasks"])
 
 
+@TaskRouter.get(
+    "/{task_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=TaskSchema,
+)
+async def get_task_by_id(
+    task_id: str,
+    user_id: int = Depends(get_user_id_from_token),
+    task_service: TaskService = Depends(TaskService),
+):
+    return await task_service.get_task_by_id(int(task_id), user_id)
+
+
 @TaskRouter.post(
     "/",
     status_code=status.HTTP_201_CREATED,
