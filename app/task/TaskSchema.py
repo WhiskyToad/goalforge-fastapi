@@ -21,13 +21,12 @@ class TaskBase(BaseModel):
     recurring_interval: Optional[str] = None
     is_habit: bool
     icon: str
-    instances: List[TaskInstanceSchema]
 
 
 class TaskSchema(TaskBase):
     id: int
     created_at: str
-    # completed_instances: int
+    instances: List[TaskInstanceSchema]
 
 
 class EditTaskInput(TaskBase):
