@@ -29,6 +29,47 @@ async def get_task_by_id(
     return await task_service.get_task_by_id(int(task_id), user_id)
 
 
+@TaskRouter.get(
+    "/",
+    status_code=status.HTTP_200_OK,
+    response_model=List[TaskInstanceSchema],
+)
+async def get_tasks_by_due_date(
+    due_date: date = date.today(),
+    task_service: TaskService = Depends(TaskService),
+    user_id: int = Depends(get_user_id_from_token),
+):
+    return await task_service.get_tasks_by_due_date(due_date, user_id)
+
+
+@TaskRouter.get(
+    "/by-ids",
+    status_code=status.HTTP_200_OK,
+    response_model=List[TaskSchema],
+)
+async def get_tasks_by_ids(
+    task_ids: str = Query(..., description="List of task IDs to fetch"),
+    task_service: TaskService = Depends(TaskService),
+    user_id: int = Depends(get_user_id_from_token),
+):
+    task_ids_list = task_ids.split(",")
+    task_ids_int = [int(task_id) for task_id in task_ids_list]
+    return await task_service.get_tasks_by_ids(task_ids_int, user_id)
+
+
+# TODO-  Change to habits?
+# @TaskRouter.get(
+#     "/",
+#     status_code=status.HTTP_200_OK,
+#     response_model=List[TaskSchema],
+# )
+# async def get_task_list(
+#     task_service: TaskService = Depends(TaskService),
+#     user_id: int = Depends(get_user_id_from_token),
+# ):
+#     return await task_service.get_task_list(user_id)
+
+
 @TaskRouter.post(
     "/",
     status_code=status.HTTP_201_CREATED,
@@ -53,19 +94,6 @@ async def create_task_instance(
     task_service: TaskService = Depends(TaskService),
 ):
     return await task_service.create_task_instance(task_input, user_id)
-
-
-@TaskRouter.get(
-    "/",
-    status_code=status.HTTP_200_OK,
-    response_model=List[TaskInstanceSchema],
-)
-async def get_tasks_by_due_date(
-    due_date: date = date.today(),
-    task_service: TaskService = Depends(TaskService),
-    user_id: int = Depends(get_user_id_from_token),
-):
-    return await task_service.get_tasks_by_due_date(due_date, user_id)
 
 
 @TaskRouter.patch(
@@ -119,31 +147,3 @@ async def delete_task_instance(
     user_id: int = Depends(get_user_id_from_token),
 ):
     return await task_service.delete_task_instance(instance_id, user_id)
-
-
-# TODO-  Change to habits?
-@TaskRouter.get(
-    "/",
-    status_code=status.HTTP_200_OK,
-    response_model=List[TaskSchema],
-)
-async def get_task_list(
-    task_service: TaskService = Depends(TaskService),
-    user_id: int = Depends(get_user_id_from_token),
-):
-    return await task_service.get_task_list(user_id)
-
-
-@TaskRouter.get(
-    "/by-ids",
-    status_code=status.HTTP_200_OK,
-    response_model=List[TaskSchema],
-)
-async def get_tasks_by_ids(
-    task_ids: str = Query(..., description="List of task IDs to fetch"),
-    task_service: TaskService = Depends(TaskService),
-    user_id: int = Depends(get_user_id_from_token),
-):
-    task_ids_list = task_ids.split(",")
-    task_ids_int = [int(task_id) for task_id in task_ids_list]
-    return await task_service.get_tasks_by_ids(task_ids_int, user_id)
