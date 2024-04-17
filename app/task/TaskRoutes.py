@@ -17,7 +17,7 @@ TaskRouter = APIRouter(prefix="/api/tasks", tags=["tasks"])
 
 
 @TaskRouter.get(
-    "/{task_id}",
+    "/by-id/{task_id}",
     status_code=status.HTTP_200_OK,
     response_model=TaskSchema,
 )
