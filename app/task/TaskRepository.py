@@ -130,10 +130,15 @@ class TaskRepository:
 
     async def get_tasks_by_ids_and_user_id(
         self, task_ids: List[int], user_id: int
-    ) -> List[Task]:
-        tasks = (
+    ) -> List[tuple[Optional[Task], List[TaskInstance]]]:
+        tasks_with_instances = (
             self.db.query(Task)
+            .options(joinedload(Task.task_instances))
             .filter(Task.id.in_(task_ids), Task.owner_id == user_id)
             .all()
         )
-        return tasks
+        results: List[tuple[Optional[Task], List[TaskInstance]]] = []
+        for task in tasks_with_instances:
+            instances: List[TaskInstance] = task.task_instances if task else []
+            results.append((task, instances))
+        return results

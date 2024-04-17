@@ -15,17 +15,16 @@ from datetime import date, datetime
 TASK_NOT_FOUND = "Task not found"
 
 
-def map_task_to_schema(task: tuple[Task, list[TaskInstance]]) -> TaskSchema:
-    task_obj, instances = task
+def map_task_to_schema(task: Task, instances: List[TaskInstance]) -> TaskSchema:
     return TaskSchema(
-        id=task_obj.id,
-        title=task_obj.title,
-        description=task_obj.description,
-        recurring=task_obj.recurring,
-        recurring_interval=task_obj.recurring_interval,
-        created_at=task_obj.created_at.isoformat(),
-        is_habit=task_obj.is_habit,
-        icon=task_obj.icon,
+        id=task.id,
+        title=task.title,
+        description=task.description,
+        recurring=task.recurring,
+        recurring_interval=task.recurring_interval,
+        created_at=task.created_at.isoformat(),
+        is_habit=task.is_habit,
+        icon=task.icon,
         instances=[map_instance_to_schema(instance) for instance in instances],
     )
 
@@ -55,8 +54,15 @@ class TaskService:
         self.task_repository = task_repository
 
     async def get_task_by_id(self, task_id: int, user_id: int) -> TaskSchema:
-        task = await self.task_repository.get_task_by_id_and_owner(task_id, user_id)
-        return map_task_to_schema(task)
+        task, instances = await self.task_repository.get_task_by_id_and_owner(
+            task_id, user_id
+        )
+        if task is None:
+            raise CustomError(
+                status_code=status.HTTP_404_NOT_FOUND,
+                message=TASK_NOT_FOUND,
+            )
+        return map_task_to_schema(task, instances)
 
     async def create_task(
         self,
@@ -154,7 +160,7 @@ class TaskService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 message=TASK_NOT_FOUND,
             )
-        return map_task_to_schema(task)
+        return map_task_to_schema(task, [])
 
     def map_task_task_instances(
         self, task: Task, task_instance: TaskInstance
@@ -177,7 +183,11 @@ class TaskService:
     async def get_tasks_by_ids(
         self, task_ids: List[int], user_id: int
     ) -> List[TaskSchema]:
-        tasks_list = await self.task_repository.get_tasks_by_ids_and_user_id(
+        task_tuples = await self.task_repository.get_tasks_by_ids_and_user_id(
             task_ids, user_id
         )
-        return [map_task_to_schema(task) for task in tasks_list]
+        return [
+            map_task_to_schema(task, task_instances)
+            for task, task_instances in task_tuples
+            if task is not None
+        ]
