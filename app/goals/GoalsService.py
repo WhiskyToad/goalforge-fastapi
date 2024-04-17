@@ -74,8 +74,11 @@ class GoalsService:
         return await map_goal_model_to_goal(goal)
 
     async def add_task_to_goal(self, goal_id: int, task_id: int, user_id: int) -> Goal:
-        task = await self.task_repository.get_task_by_id_and_owner(task_id, user_id)
+        task_tuple = await self.task_repository.get_task_by_id_and_owner(
+            task_id, user_id
+        )
         goal = await self.goals_repository.get_goal_by_id_and_user_id(goal_id, user_id)
+        task, _ = task_tuple
         if not task:
             raise CustomError(
                 status_code=status.HTTP_404_NOT_FOUND,
