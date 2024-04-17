@@ -8,40 +8,13 @@ from app.task.TaskSchema import (
     EditTaskInput,
     TaskSchema,
 )
-from app.task.TaskModel import Task, TaskInstance
+from app.task.TaskModel import Task
 from app.shared.errors.CustomError import CustomError
 from datetime import date, datetime
 
+from app.task.TaskUtils import map_task_task_instances, map_task_to_schema
+
 TASK_NOT_FOUND = "Task not found"
-
-
-def map_task_to_schema(task: Task, instances: List[TaskInstance]) -> TaskSchema:
-    return TaskSchema(
-        id=task.id,
-        title=task.title,
-        description=task.description,
-        recurring=task.recurring,
-        recurring_interval=task.recurring_interval,
-        created_at=task.created_at.isoformat(),
-        is_habit=task.is_habit,
-        icon=task.icon,
-        instances=[map_instance_to_schema(instance) for instance in instances],
-    )
-
-
-def map_instance_to_schema(instance: TaskInstance) -> TaskInstanceSchema:
-    return TaskInstanceSchema(
-        task_id=instance.task_id,
-        title=instance.task.title,
-        description=instance.task.description,
-        id=instance.id,
-        completed=instance.completed,
-        completed_at=(
-            instance.completed_at.isoformat() if instance.completed_at else None
-        ),
-        due_date=instance.due_date.isoformat() if instance.due_date else None,
-        status=instance.status,
-    )
 
 
 class TaskService:
@@ -81,7 +54,7 @@ class TaskService:
         task_instance = await self.task_repository.create_task_instance(
             task.id, datetime.fromisoformat(task_input.due_date)
         )
-        return self.map_task_task_instances(task_in_db, task_instance)
+        return map_task_task_instances(task_in_db, task_instance)
 
     async def create_task_instance(
         self,
@@ -100,14 +73,14 @@ class TaskService:
         task_instance = await self.task_repository.create_task_instance(
             task_input.task_id, datetime.fromisoformat(task_input.due_date)
         )
-        return self.map_task_task_instances(task, task_instance)
+        return map_task_task_instances(task, task_instance)
 
     async def get_tasks_by_due_date(self, due_date: date, user_id: int):
         task_instances = await self.task_repository.get_tasks_by_due_date(
             due_date, user_id
         )
         return [
-            self.map_task_task_instances(task, task_instance)
+            map_task_task_instances(task, task_instance)
             for task, task_instance in task_instances
         ]
 
@@ -161,21 +134,6 @@ class TaskService:
                 message=TASK_NOT_FOUND,
             )
         return map_task_to_schema(task, [])
-
-    def map_task_task_instances(
-        self, task: Task, task_instance: TaskInstance
-    ) -> TaskInstanceSchema:
-        due_date_str = task_instance.due_date.isoformat()
-        return TaskInstanceSchema(
-            task_id=task.id,
-            title=task.title,
-            description=task.description,
-            id=task_instance.id,
-            completed=task_instance.completed,
-            completed_at=task_instance.completed_at,
-            due_date=due_date_str,
-            status=task_instance.status,
-        )
 
     def delete_task_instance(self, instance_id: int, user_id: int):
         return self.task_repository.delete_task_instance(instance_id, user_id)
