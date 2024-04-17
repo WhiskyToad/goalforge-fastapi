@@ -1,6 +1,17 @@
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel
+
+
+class TaskInstanceSchema(BaseModel):
+    task_id: int
+    title: str
+    description: str
+    id: int
+    completed: bool
+    completed_at: Optional[str]
+    due_date: Optional[str]
+    status: str
 
 
 class TaskBase(BaseModel):
@@ -10,6 +21,7 @@ class TaskBase(BaseModel):
     recurring_interval: Optional[str] = None
     is_habit: bool
     icon: str
+    instances: List[TaskInstanceSchema]
 
 
 class TaskSchema(TaskBase):
@@ -29,14 +41,3 @@ class CreateTaskInput(TaskBase):
 class CreateTaskInstanceInput(BaseModel):
     task_id: int
     due_date: str
-
-
-class TaskInstanceSchema(BaseModel):
-    task_id: int
-    title: str
-    description: str
-    id: int
-    completed: bool
-    completed_at: Optional[str]
-    due_date: Optional[str]
-    status: str

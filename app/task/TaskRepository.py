@@ -121,16 +121,6 @@ class TaskRepository:
         self.db.commit()
         return {"success": True}
 
-    async def get_task_list(self, user_id: int):
-        tasks_with_counts = (
-            self.db.query(Task, func.count(TaskInstance.completed))
-            .filter(Task.owner_id == user_id)
-            .outerjoin(Task.task_instances)
-            .group_by(Task.id)
-            .all()
-        )
-        return tasks_with_counts
-
     async def get_tasks_by_ids_and_user_id(
         self, task_ids: List[int], user_id: int
     ) -> List[Task]:

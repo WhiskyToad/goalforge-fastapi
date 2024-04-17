@@ -57,19 +57,6 @@ async def get_tasks_by_ids(
     return await task_service.get_tasks_by_ids(task_ids_int, user_id)
 
 
-# TODO-  Change to habits?
-# @TaskRouter.get(
-#     "/",
-#     status_code=status.HTTP_200_OK,
-#     response_model=List[TaskSchema],
-# )
-# async def get_task_list(
-#     task_service: TaskService = Depends(TaskService),
-#     user_id: int = Depends(get_user_id_from_token),
-# ):
-#     return await task_service.get_task_list(user_id)
-
-
 @TaskRouter.post(
     "/",
     status_code=status.HTTP_201_CREATED,
