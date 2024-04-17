@@ -5,6 +5,7 @@ from app.task.TaskSchema import EditTaskInput
 from app.task.TaskModel import Task, TaskInstance
 from typing import List, Optional
 from sqlalchemy import func
+from sqlalchemy.orm import joinedload
 from datetime import date
 
 
@@ -31,12 +32,18 @@ class TaskRepository:
 
     async def get_task_by_id_and_owner(
         self, task_id: int, owner_id: int
-    ) -> Task | None:
-        return (
+    ) -> tuple[Task | None, list[TaskInstance]]:
+        task_with_instances = (
             self.db.query(Task)
+            .options(joinedload(Task.task_instances))
             .filter(Task.id == task_id, Task.owner_id == owner_id)
             .first()
         )
+
+        if task_with_instances:
+            return task_with_instances, task_with_instances.task_instances
+        else:
+            return None, []
 
     async def get_tasks_by_due_date(self, due_date: date, user_id: int):
         tasks = (

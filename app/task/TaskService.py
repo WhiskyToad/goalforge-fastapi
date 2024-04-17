@@ -15,16 +15,33 @@ from datetime import date, datetime
 TASK_NOT_FOUND = "Task not found"
 
 
-def map_task_to_schema(task: Task) -> TaskSchema:
+def map_task_to_schema(task: tuple[Task, list[TaskInstance]]) -> TaskSchema:
+    task_obj, instances = task
     return TaskSchema(
-        id=task.id,
-        title=task.title,
-        description=task.description,
-        recurring=task.recurring,
-        recurring_interval=task.recurring_interval,
-        created_at=task.created_at.isoformat(),
-        is_habit=task.is_habit,
-        icon=task.icon,
+        id=task_obj.id,
+        title=task_obj.title,
+        description=task_obj.description,
+        recurring=task_obj.recurring,
+        recurring_interval=task_obj.recurring_interval,
+        created_at=task_obj.created_at.isoformat(),
+        is_habit=task_obj.is_habit,
+        icon=task_obj.icon,
+        instances=[map_instance_to_schema(instance) for instance in instances],
+    )
+
+
+def map_instance_to_schema(instance: TaskInstance) -> TaskInstanceSchema:
+    return TaskInstanceSchema(
+        task_id=instance.task_id,
+        title=instance.task.title,
+        description=instance.task.description,
+        id=instance.id,
+        completed=instance.completed,
+        completed_at=(
+            instance.completed_at.isoformat() if instance.completed_at else None
+        ),
+        due_date=instance.due_date.isoformat() if instance.due_date else None,
+        status=instance.status,
     )
 
 
@@ -65,9 +82,10 @@ class TaskService:
         task_input: CreateTaskInstanceInput,
         user_id: int,
     ) -> TaskInstanceSchema:
-        task = await self.task_repository.get_task_by_id_and_owner(
+        task_tuple = await self.task_repository.get_task_by_id_and_owner(
             task_input.task_id, user_id
         )
+        task, _ = task_tuple
         if task is None:
             raise CustomError(
                 status_code=status.HTTP_404_NOT_FOUND,
