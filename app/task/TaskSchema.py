@@ -49,3 +49,7 @@ class CreateTaskInput(TaskBase):
 class CreateTaskInstanceInput(BaseModel):
     task_id: int
     due_date: str
+
+
+class CompleteTaskInstanceInput(BaseModel):
+    status: TaskInstanceStatus

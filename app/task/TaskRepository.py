@@ -1,7 +1,11 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from app.shared.config.Database import get_db_connection
-from app.task.TaskSchema import EditTaskInput
+from app.task.TaskSchema import (
+    CompleteTaskInstanceInput,
+    EditTaskInput,
+    TaskInstanceStatus,
+)
 from app.task.TaskModel import Task, TaskInstance
 from typing import List, Optional
 from sqlalchemy import func
@@ -57,7 +61,9 @@ class TaskRepository:
         )
         return tasks
 
-    async def complete_task_instance(self, task_instance_id: int, user_id: int):
+    async def complete_task_instance(
+        self, input: CompleteTaskInstanceInput, task_instance_id: int, user_id: int
+    ):
         task_instance = (
             self.db.query(TaskInstance)
             .join(Task, Task.id == TaskInstance.task_id)
@@ -72,7 +78,7 @@ class TaskRepository:
 
         task_instance.completed = True
         task_instance.completed_at = func.now()
-        task_instance.status = "completed"
+        task_instance.status = input.status
 
         self.db.commit()
         self.db.refresh(task_instance)
@@ -93,7 +99,7 @@ class TaskRepository:
 
         task_instance.completed = False
         task_instance.completed_at = None
-        task_instance.status = "pending"
+        task_instance.status = TaskInstanceStatus.PENDING
 
         self.db.commit()
         self.db.refresh(task_instance)

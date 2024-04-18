@@ -2,6 +2,7 @@ from typing import List
 from fastapi import Depends, status
 from app.task.TaskRepository import TaskRepository
 from app.task.TaskSchema import (
+    CompleteTaskInstanceInput,
     CreateTaskInput,
     TaskInstanceSchema,
     CreateTaskInstanceInput,
@@ -84,9 +85,11 @@ class TaskService:
             for task, task_instance in task_instances
         ]
 
-    async def complete_task_instance(self, task_instance_id: int, user_id: int):
+    async def complete_task_instance(
+        self, input: CompleteTaskInstanceInput, task_instance_id: int, user_id: int
+    ):
         task_instance = await self.task_repository.complete_task_instance(
-            task_instance_id, user_id
+            input, task_instance_id, user_id
         )
         if task_instance is None:
             raise CustomError(

@@ -1,6 +1,7 @@
 from fastapi import Depends, APIRouter, Query, status
 from app.auth.auth_utils import get_user_id_from_token
 from app.task.TaskSchema import (
+    CompleteTaskInstanceInput,
     CreateTaskInput,
     TaskInstanceSchema,
     CreateTaskInstanceInput,
@@ -90,10 +91,11 @@ async def create_task_instance(
 )
 async def complete_task_instance(
     task_instance_id: int,
+    input: CompleteTaskInstanceInput,
     task_service: TaskService = Depends(TaskService),
     user_id: int = Depends(get_user_id_from_token),
 ):
-    return await task_service.complete_task_instance(task_instance_id, user_id)
+    return await task_service.complete_task_instance(input, task_instance_id, user_id)
 
 
 @TaskRouter.patch(
