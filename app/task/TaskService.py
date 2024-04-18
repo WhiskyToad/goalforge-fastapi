@@ -103,8 +103,8 @@ class TaskService:
             description=task_instance.task.description,
             id=task_instance.id,
             completed=task_instance.completed,
-            completed_at=task_instance.completed_at,
-            due_date=task_instance.due_date,
+            completed_at=task_instance.completed_at.isoformat(),
+            due_date=task_instance.due_date.isoformat(),
             status=task_instance.status,
         )
 
