@@ -3,6 +3,15 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 
+from enum import Enum
+
+
+class TaskInstanceStatus(Enum):
+    PENDING = "pending"
+    DONE = "done"
+    FAILED = "failed"
+
+
 class TaskInstanceSchema(BaseModel):
     task_id: int
     title: str
@@ -11,7 +20,7 @@ class TaskInstanceSchema(BaseModel):
     completed: bool
     completed_at: Optional[str]
     due_date: Optional[str]
-    status: str
+    status: TaskInstanceStatus
 
 
 class TaskBase(BaseModel):

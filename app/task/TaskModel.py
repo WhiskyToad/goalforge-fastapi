@@ -1,7 +1,15 @@
-from sqlalchemy import Integer, String, DateTime, Boolean, ForeignKey
+from sqlalchemy import (
+    Integer,
+    String,
+    DateTime,
+    Boolean,
+    ForeignKey,
+    Enum as SQLAlchemyEnum,
+)
 from sqlalchemy.orm import relationship, mapped_column
 from datetime import datetime, timezone
 from app.shared.models.BaseModel import EntityMeta
+from app.task.TaskSchema import TaskInstanceStatus
 
 
 class Task(EntityMeta):
@@ -33,6 +41,8 @@ class TaskInstance(EntityMeta):
     completed_at = mapped_column(DateTime(timezone=True), nullable=True, default=None)
     task_id = mapped_column(Integer, ForeignKey("tasks.id"))
     due_date = mapped_column(DateTime(timezone=True))
-    status = mapped_column(String, default="pending")
+    status = mapped_column(
+        SQLAlchemyEnum(TaskInstanceStatus), default=TaskInstanceStatus.PENDING
+    )
 
     task = relationship("Task", back_populates="task_instances")
