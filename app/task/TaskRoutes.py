@@ -10,7 +10,6 @@ from app.task.TaskSchema import (
 )
 from app.shared.schemas.GenericSchema import SuccessMessage
 from app.task.TaskService import TaskService
-from datetime import date
 from typing import List
 
 
@@ -33,14 +32,13 @@ async def get_task_by_id(
 @TaskRouter.get(
     "/",
     status_code=status.HTTP_200_OK,
-    response_model=List[TaskInstanceSchema],
+    response_model=List[TaskSchema],
 )
-async def get_tasks_by_due_date(
-    due_date: date = date.today(),
+async def get_all_tasks(
     task_service: TaskService = Depends(TaskService),
     user_id: int = Depends(get_user_id_from_token),
 ):
-    return await task_service.get_tasks_by_due_date(due_date, user_id)
+    return await task_service.get_all_tasks(user_id)
 
 
 @TaskRouter.get(

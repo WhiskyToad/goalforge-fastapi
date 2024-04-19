@@ -49,6 +49,21 @@ class TaskRepository:
         else:
             return None, []
 
+    async def get_all_tasks_for_owner(
+        self, user_id: int
+    ) -> List[tuple[Optional[Task], List[TaskInstance]]]:
+        tasks_with_instances = (
+            self.db.query(Task)
+            .options(joinedload(Task.task_instances))
+            .filter(Task.owner_id == user_id)
+            .all()
+        )
+        results: List[tuple[Optional[Task], List[TaskInstance]]] = []
+        for task in tasks_with_instances:
+            instances: List[TaskInstance] = task.task_instances if task else []
+            results.append((task, instances))
+        return results
+
     async def get_tasks_by_due_date(self, due_date: date, user_id: int):
         tasks = (
             self.db.query(Task, TaskInstance)

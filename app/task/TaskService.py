@@ -38,6 +38,15 @@ class TaskService:
             )
         return map_task_to_schema(task, instances)
 
+    async def get_all_tasks(self, user_id: int) -> list[TaskSchema]:
+        task_tuples = await self.task_repository.get_all_tasks_for_owner(user_id)
+
+        return [
+            map_task_to_schema(task, task_instances)
+            for task, task_instances in task_tuples
+            if task is not None
+        ]
+
     async def create_task(
         self,
         task_input: CreateTaskInput,
