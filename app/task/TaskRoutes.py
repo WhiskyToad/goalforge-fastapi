@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import Depends, APIRouter, Query, status
 from app.auth.auth_utils import get_user_id_from_token
 from app.task.TaskSchema import (
@@ -54,6 +55,21 @@ async def get_tasks_by_ids(
     task_ids_list = task_ids.split(",")
     task_ids_int = [int(task_id) for task_id in task_ids_list]
     return await task_service.get_tasks_by_ids(task_ids_int, user_id)
+
+
+@TaskRouter.get(
+    "/due-date/{due_date}",
+    status_code=status.HTTP_200_OK,
+    response_model=List[TaskInstanceSchema],
+)
+async def get_tasks_by_due_date(
+    due_date: str,
+    task_service: TaskService = Depends(TaskService),
+    user_id: int = Depends(get_user_id_from_token),
+):
+    return await task_service.get_tasks_by_due_date(
+        datetime.fromisoformat(due_date), user_id
+    )
 
 
 @TaskRouter.post(

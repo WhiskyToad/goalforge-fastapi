@@ -36,13 +36,16 @@ def map_task_task_instances(
     task: Task, task_instance: TaskInstance
 ) -> TaskInstanceSchema:
     due_date_str = task_instance.due_date.isoformat()
+    completed_at_iso: None | str = None
+    if task_instance.completed_at:
+        completed_at_iso = task_instance.completed_at.isoformat()
     return TaskInstanceSchema(
         task_id=task.id,
         title=task.title,
         description=task.description,
         id=task_instance.id,
         completed=task_instance.completed,
-        completed_at=task_instance.completed_at,
+        completed_at=completed_at_iso,
         due_date=due_date_str,
         status=task_instance.status,
     )
