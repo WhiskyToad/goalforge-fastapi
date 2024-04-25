@@ -20,7 +20,7 @@ def map_task_to_schema(task: Task, instances: List[TaskInstance]) -> TaskSchema:
 def map_instance_to_schema(instance: TaskInstance) -> TaskInstanceSchema:
     return TaskInstanceSchema(
         task_id=instance.task_id,
-        title=instance.task.title,
+        task_title=instance.task.title,
         description=instance.task.description,
         id=instance.id,
         completed=instance.completed,
@@ -29,6 +29,7 @@ def map_instance_to_schema(instance: TaskInstance) -> TaskInstanceSchema:
         ),
         due_date=instance.due_date.isoformat() if instance.due_date else None,
         status=instance.status,
+        task_icon=instance.task.icon,
     )
 
 
@@ -41,11 +42,12 @@ def map_task_task_instances(
         completed_at_iso = task_instance.completed_at.isoformat()
     return TaskInstanceSchema(
         task_id=task.id,
-        title=task.title,
+        task_title=task.title,
         description=task.description,
         id=task_instance.id,
         completed=task_instance.completed,
         completed_at=completed_at_iso,
         due_date=due_date_str,
         status=task_instance.status,
+        task_icon=task.icon,
     )

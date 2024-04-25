@@ -14,7 +14,8 @@ class TaskInstanceStatus(Enum):
 
 class TaskInstanceSchema(BaseModel):
     task_id: int
-    title: str
+    task_title: str
+    task_icon: str
     description: str
     id: int
     completed: bool

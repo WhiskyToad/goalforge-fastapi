@@ -108,13 +108,14 @@ class TaskService:
 
         return TaskInstanceSchema(
             task_id=task_instance.task.id,
-            title=task_instance.task.title,
+            task_title=task_instance.task.title,
             description=task_instance.task.description,
             id=task_instance.id,
             completed=task_instance.completed,
             completed_at=task_instance.completed_at.isoformat(),
             due_date=task_instance.due_date.isoformat(),
             status=task_instance.status,
+            task_icon=task_instance.task.icon,
         )
 
     async def uncomplete_task_instance(self, task_instance_id: int, user_id: int):
@@ -129,7 +130,8 @@ class TaskService:
 
         return TaskInstanceSchema(
             task_id=task_instance.task.id,
-            title=task_instance.task.title,
+            task_title=task_instance.task.title,
+            task_icon=task_instance.task.icon,
             description=task_instance.task.description,
             id=task_instance.id,
             completed=task_instance.completed,
