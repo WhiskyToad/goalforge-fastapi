@@ -123,3 +123,15 @@ class GoalsRepository:
             print(f"Error removing task from goal: {e}")
             self.db.rollback()
             return None
+
+    async def remove_deleted_task_from_goal(self, task_id: int) -> None:
+        goals = (
+            self.db.query(GoalModel)
+            .filter(GoalModel.tasks.any(Task.id == task_id))
+            .all()
+        )
+        # Remove the task from each goal
+        for goal in goals:
+            goal.tasks = [task for task in goal.tasks if task.id != task_id]
+            # Commit the changes
+        self.db.commit()

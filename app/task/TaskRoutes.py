@@ -162,3 +162,16 @@ async def delete_task_instance(
     user_id: int = Depends(get_user_id_from_token),
 ):
     return await task_service.delete_task_instance(instance_id, user_id)
+
+
+@TaskRouter.delete(
+    "/{task_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=SuccessMessage,
+)
+async def delete_task(
+    task_id: int,
+    task_service: TaskService = Depends(TaskService),
+    user_id: int = Depends(get_user_id_from_token),
+):
+    return await task_service.delete_task_and_instances_by_id(task_id, user_id)

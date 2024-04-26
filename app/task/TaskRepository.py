@@ -177,3 +177,21 @@ class TaskRepository:
             .all()
         )
         return tasks_with_instances
+
+    async def delete_task_and_instances(self, task_id: int, user_id: int):
+        # Retrieve the task with the specified task_id and its associated instances
+        task = (
+            self.db.query(Task)
+            .options(joinedload(Task.task_instances))
+            .filter(Task.owner_id == user_id, Task.id == task_id)
+            .first()
+        )
+        if task:
+            # Delete each associated task instance
+            for task_instance in task.task_instances:
+                self.db.delete(task_instance)
+            # Delete the task itself
+            self.db.delete(task)
+            # Commit the changes
+            self.db.commit()
+        return {"success": True}

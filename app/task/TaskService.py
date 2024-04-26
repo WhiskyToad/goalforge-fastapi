@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import Depends, status
+from app.goals.GoalsRepository import GoalsRepository
 from app.task.TaskRepository import TaskRepository
 from app.task.TaskSchema import (
     CompleteTaskInstanceInput,
@@ -20,12 +21,15 @@ TASK_NOT_FOUND = "Task not found"
 
 class TaskService:
     task_repository: TaskRepository
+    goals_repository: GoalsRepository
 
     def __init__(
         self,
         task_repository: TaskRepository = Depends(TaskRepository),
+        goals_repository: GoalsRepository = Depends(GoalsRepository),
     ) -> None:
         self.task_repository = task_repository
+        self.goals_repository = goals_repository
 
     async def get_task_by_id(self, task_id: int, user_id: int) -> TaskSchema:
         task, instances = await self.task_repository.get_task_by_id_and_owner(
@@ -175,3 +179,7 @@ class TaskService:
             map_task_task_instances(task, task_instance)
             for task, task_instance in sorted_task_tuples
         ]
+
+    async def delete_task_and_instances_by_id(self, task_id: int, user_id: int):
+        await self.goals_repository.remove_deleted_task_from_goal(task_id)
+        return await self.task_repository.delete_task_and_instances(task_id, user_id)
