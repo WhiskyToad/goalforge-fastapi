@@ -72,6 +72,18 @@ async def get_tasks_by_due_date(
     )
 
 
+@TaskRouter.get(
+    "/pending",
+    status_code=status.HTTP_200_OK,
+    response_model=List[TaskInstanceSchema],
+)
+async def get_pending_tasks(
+    task_service: TaskService = Depends(TaskService),
+    user_id: int = Depends(get_user_id_from_token),
+):
+    return await task_service.get_pending_tasks(user_id)
+
+
 @TaskRouter.post(
     "/",
     status_code=status.HTTP_201_CREATED,

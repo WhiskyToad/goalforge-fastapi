@@ -163,3 +163,15 @@ class TaskService:
             for task, task_instances in task_tuples
             if task is not None
         ]
+
+    async def get_pending_tasks(self, user_id: int) -> list[TaskInstanceSchema]:
+        task_tuples = await self.task_repository.get_all_pending_tasks_for_owner(
+            user_id
+        )
+
+        sorted_task_tuples = sorted(task_tuples, key=lambda x: x[1].due_date)
+
+        return [
+            map_task_task_instances(task, task_instance)
+            for task, task_instance in sorted_task_tuples
+        ]

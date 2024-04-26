@@ -163,3 +163,17 @@ class TaskRepository:
             instances: List[TaskInstance] = task.task_instances if task else []
             results.append((task, instances))
         return results
+
+    async def get_all_pending_tasks_for_owner(self, user_id: int):
+        today = date.today()
+        tasks_with_instances = (
+            self.db.query(Task, TaskInstance)
+            .join(Task, Task.id == TaskInstance.task_id)
+            .filter(
+                Task.owner_id == user_id,
+                func.date(TaskInstance.due_date) < today,
+                TaskInstance.status == TaskInstanceStatus.PENDING,
+            )
+            .all()
+        )
+        return tasks_with_instances
