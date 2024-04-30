@@ -55,7 +55,7 @@ class TaskService:
         self,
         task_input: CreateTaskInput,
         user_id: int,
-    ) -> TaskInstanceSchema:
+    ) -> TaskSchema:
         task = Task(
             title=task_input.title,
             description=task_input.description,
@@ -68,7 +68,7 @@ class TaskService:
         task_instance = await self.task_repository.create_task_instance(
             task.id, datetime.fromisoformat(task_input.due_date)
         )
-        return map_task_task_instances(task_in_db, task_instance)
+        return map_task_to_schema(task_in_db, [task_instance])
 
     async def create_task_instance(
         self,

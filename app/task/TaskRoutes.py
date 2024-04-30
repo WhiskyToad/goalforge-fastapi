@@ -87,7 +87,7 @@ async def get_pending_tasks(
 @TaskRouter.post(
     "/",
     status_code=status.HTTP_201_CREATED,
-    response_model=TaskInstanceSchema,
+    response_model=TaskSchema,
 )
 async def create_task(
     task_input: CreateTaskInput,
