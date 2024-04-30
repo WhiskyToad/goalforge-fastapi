@@ -20,7 +20,7 @@ class TaskInstanceSchema(BaseModel):
     id: int
     completed: bool
     completed_at: Optional[str]
-    due_date: Optional[str]
+    due_date: str
     status: TaskInstanceStatus
 
 
