@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
+from app.task.TaskSchema import TaskSchema
+
 
 class GoalCreateInput(BaseModel):
     title: str
@@ -15,7 +17,7 @@ class Goal(BaseModel):
     description: Optional[str]
     is_completed: bool
     target_date: Optional[str]
-    task_ids: List[str]
+    tasks: List[TaskSchema]
     icon: str
 
 

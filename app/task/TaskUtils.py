@@ -27,7 +27,7 @@ def map_instance_to_schema(instance: TaskInstance) -> TaskInstanceSchema:
         completed_at=(
             instance.completed_at.isoformat() if instance.completed_at else None
         ),
-        due_date=instance.due_date.isoformat() if instance.due_date else None,
+        due_date=instance.due_date.isoformat(),
         status=instance.status,
         task_icon=instance.task.icon,
     )

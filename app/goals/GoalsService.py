@@ -6,6 +6,7 @@ from app.goals.GoalsRepository import GoalsRepository
 from app.goals.GoalsSchema import Goal, GoalCreateInput
 from app.shared.errors.CustomError import CustomError
 from app.task.TaskRepository import TaskRepository
+from app.task.TaskSchema import TaskInstanceSchema, TaskSchema
 from app.task.TaskService import TASK_NOT_FOUND
 
 
@@ -13,13 +14,44 @@ GOAL_NOT_FOUND = "Goal not found"
 
 
 async def map_goal_model_to_goal(goal_model: GoalModel) -> Goal:
+    tasks: List[TaskSchema] = []
+    for task_model in goal_model.tasks:
+        instances = [
+            TaskInstanceSchema(
+                task_id=instance.task_id,
+                task_title=instance.task.title,
+                task_icon=instance.task.icon,
+                description=instance.task.description,
+                id=instance.id,
+                completed=instance.completed,
+                completed_at=(
+                    str(instance.completed_at) if instance.completed_at else None
+                ),
+                due_date=str(instance.due_date),
+                status=instance.status,
+            )
+            for instance in task_model.task_instances
+        ]
+        task_schema = TaskSchema(
+            id=task_model.id,
+            title=task_model.title,
+            description=task_model.description,
+            recurring=task_model.recurring,
+            recurring_interval=task_model.recurring_interval,
+            is_habit=task_model.is_habit,
+            icon=task_model.icon,
+            created_at=str(task_model.created_at),
+            instances=instances,
+        )
+        tasks.append(task_schema)
+
     return Goal(
         id=goal_model.id,
         title=goal_model.title,
         description=goal_model.description,
         is_completed=goal_model.is_completed,
-        target_date=goal_model.target_date,
-        task_ids=[task.id for task in goal_model.tasks],
+        target_date=str(goal_model.target_date) if goal_model.target_date else None,
+        tasks=tasks,
         icon=goal_model.icon,
     )
 

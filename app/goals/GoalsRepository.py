@@ -1,12 +1,11 @@
 from typing import List
 from fastapi import Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.goals.GoalsModel import GoalModel, GoalTask
 from app.goals.GoalsSchema import GoalCreateInput
 from app.shared.config.Database import get_db_connection
 from app.task.TaskModel import Task
-from app.user.UserModel import UserModel
 
 
 class GoalsRepository:
@@ -18,8 +17,8 @@ class GoalsRepository:
     async def get_all_tasks_by_user_id(self, user_id: int) -> List[GoalModel]:
         goals = (
             self.db.query(GoalModel)
-            .join(UserModel)
-            .filter(UserModel.id == user_id)
+            .options(joinedload(GoalModel.tasks).joinedload(Task.task_instances))
+            .filter(GoalModel.user_id == user_id)
             .all()
         )
         return goals
@@ -29,8 +28,8 @@ class GoalsRepository:
     ) -> GoalModel | None:
         goal = (
             self.db.query(GoalModel)
-            .join(UserModel)
-            .filter(UserModel.id == user_id, GoalModel.id == goal_id)
+            .options(joinedload(GoalModel.tasks).joinedload(Task.task_instances))
+            .filter(GoalModel.id == goal_id, GoalModel.user_id == user_id)
             .first()
         )
 
